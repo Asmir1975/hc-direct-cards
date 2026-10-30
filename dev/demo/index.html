@@ -16,7 +16,14 @@ async function show(kind){
  const model=fixture.models[kind],states=structuredClone(model.states);
  for(const [id,state] of Object.entries(states)){
   if(id.endsWith("_einschalter"))states[id]={...state,state:"on"};
-  if(id.endsWith("_betriebszustand")&&!id.includes("_zone_"))states[id]={...state,state:"ready"};
+  if(id.endsWith("_betriebszustand")&&!id.includes("_zone_")){
+   const mode=new URLSearchParams(location.search).get("state");
+   states[id]={...state,state:mode==="run"?"BSH.Common.EnumType.OperationState.Run":mode==="finished"?"BSH.Common.EnumType.OperationState.Finished":"ready",last_changed:new Date(Date.now()-25*60000).toISOString()};
+  }
+  if(new URLSearchParams(location.search).get("state")==="run"){
+   if(id.endsWith("_verbleibende_programmlaufzeit"))states[id]={...state,state:"1.5",attributes:{...state.attributes,unit_of_measurement:"h"}};
+   if(id.endsWith("_verstrichene_programmlaufzeit"))states[id]={...state,state:"37",attributes:{...state.attributes,unit_of_measurement:"min"}};
+  }
  }
  const hass={states,language:new URLSearchParams(location.search).get("lang")==="en"?"en":"de",callWS:async()=>model.registry,
   formatEntityState:e=>e.attributes.fixture_state_labels?.[e.state]||(e.entity_id.startsWith("switch.")&&["on","off"].includes(e.state)?(e.state==="on"?"Ein":"Aus"):e.state)+(e.attributes.unit_of_measurement?" "+e.attributes.unit_of_measurement:""),

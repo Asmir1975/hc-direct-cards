@@ -19,6 +19,8 @@ export const ovenDefinition: ApplianceDefinition = {
     { key: "duration_entity", label: "Duration", section: "program", kind: "number", domains: ["number"], aliases: ["duration", "dauer"] },
     { key: "level_entity", label: "Level", section: "program", kind: "select", domains: ["select"], aliases: ["level", "stufe"] },
     { key: "rapid_preheat_entity", label: "Rapid preheat", section: "options", kind: "toggle", domains: ["switch"], aliases: ["rapid preheat", "schnelles vorheizen"] },
+    { key: "elapsed_time_entity", label: "Elapsed program time", section: "status", kind: "status", domains: ["sensor"], aliases: ["elapsed program time", "verstrichene programmlaufzeit"] },
+    { key: "estimated_time_entity", label: "Estimated program time", section: "status", kind: "status", domains: ["sensor"], aliases: ["estimated total program time", "estimated remaining program time"] },
     { key: "cavity_light_entity", label: "Cavity light", section: "options", kind: "light", domains: ["light"], aliases: ["cavity light", "garraumlicht"] },
     { key: "door_entity", label: "Door", section: "status", kind: "status", domains: ["binary_sensor", "sensor"], aliases: ["door", "tur"], warning: true },
     { key: "water_tank_entity", label: "Water tank", section: "status", kind: "status", domains: ["sensor", "binary_sensor"], aliases: ["water tank", "wassertank"], warning: true },

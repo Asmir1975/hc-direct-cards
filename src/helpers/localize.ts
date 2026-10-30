@@ -3,6 +3,9 @@ import type { FieldDefinition } from "../types/schema";
 
 const de: Record<string, string> = {
   "unit.min": "Min.",
+  "time.elapsed": "Laufzeit", "time.done_in": "Fertig in", "time.done_at": "Fertig um {t}",
+  "time.estimate": "Geschätzte Dauer", "time.done_at_start": "Fertig um {t} bei Start",
+  "field.elapsed_time_entity": "Verstrichene Programmlaufzeit", "field.estimated_time_entity": "Geschätzte Programmlaufzeit",
   "action.decrease": "Verringern",
   "action.increase": "Erhöhen",
   "direct.move_rear": "Hinten",

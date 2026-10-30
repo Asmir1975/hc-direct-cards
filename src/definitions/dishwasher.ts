@@ -19,6 +19,8 @@ export const dishwasherDefinition: ApplianceDefinition = {
     { key: "rinse_aid_entity", label: "Rinse aid", section: "status", kind: "status", domains: ["sensor", "binary_sensor"], aliases: ["rinse aid", "klarspuler"], warning: true },
     { key: "vario_speed_entity", label: "VarioSpeed Plus", section: "options", kind: "toggle", domains: ["switch"], aliases: ["variospeed"] },
     { key: "hygiene_entity", label: "Hygiene Plus", section: "options", kind: "toggle", domains: ["switch"], aliases: ["hygiene plus"] },
+    { key: "elapsed_time_entity", label: "Elapsed program time", section: "status", kind: "status", domains: ["sensor"], aliases: ["elapsed program time", "verstrichene programmlaufzeit"] },
+    { key: "estimated_time_entity", label: "Estimated program time", section: "status", kind: "status", domains: ["sensor"], aliases: ["estimated total program time", "estimated remaining program time"] },
     { key: "smart_start_entity", label: "Smart Start", section: "options", kind: "toggle", domains: ["switch"], aliases: ["smart start"] },
     { key: "auto_smart_start_entity", label: "Auto Smart Start", section: "settings", kind: "toggle", domains: ["switch"], aliases: ["auto smart start", "automatischer smart start"] },
     { key: "extra_dry_entity", label: "Extra drying", section: "options", kind: "toggle", domains: ["switch"], aliases: ["extra drying", "extratrocknen"] },

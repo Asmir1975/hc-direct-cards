@@ -136,6 +136,12 @@ const specific: Record<ApplianceKind, Record<string, string[]>> = {
     "rapid_preheat_entity": [
       "switch_oven_fast_pre_heat"
     ],
+    "elapsed_time_entity": [
+      "sensor_elapsed_program_time"
+    ],
+    "estimated_time_entity": [
+      "sensor_estimated_remaining_program_time"
+    ],
     "cavity_light_entity": [
       "light_oven_cavity"
     ],
@@ -197,6 +203,12 @@ const specific: Record<ApplianceKind, Record<string, string[]>> = {
     ],
     "auto_smart_start_entity": [
       "switch_auto_smart_start"
+    ],
+    "elapsed_time_entity": [
+      "sensor_elapsed_program_time"
+    ],
+    "estimated_time_entity": [
+      "sensor_estimated_remaining_program_time"
     ],
     "extra_dry_entity": [
       "switch_extra_dry"

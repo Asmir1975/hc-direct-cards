@@ -19,6 +19,9 @@ export const commonCardStyles = css`
   .now-running strong { color:var(--hc-accent); }
   .progress-line { height:3px; margin:0 20px 14px; background:var(--divider-color); overflow:hidden; border-radius:2px; }
   .progress-line span { height:100%; display:block; background:var(--hc-accent); transition:width .25s ease; }
+  .times { margin:0 20px 14px; display:flex; flex-wrap:wrap; gap:6px 8px; }
+  .time-chip { padding:4px 10px; border-radius:999px; font-size:12px; font-variant-numeric:tabular-nums; color:var(--secondary-text-color); background:color-mix(in srgb, var(--hc-accent) 14%, transparent); }
+  .time-chip b { color:var(--primary-text-color); font-weight:650; }
   .key-metrics { margin:0 20px 14px; display:flex; gap:12px; font-size:18px; }
   .warning-strip { padding:0 20px 12px; display:grid; gap:6px; }
   .notice { font-size:12px; padding:8px 10px; border-left:3px solid var(--warning-color,#d18420); background:color-mix(in srgb,var(--warning-color,#d18420),transparent 94%); overflow-wrap:anywhere; }

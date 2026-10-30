@@ -19,7 +19,8 @@ export interface HomeAssistant {
   entities?: Record<string, unknown>;
   devices?: Record<string, { id: string; name?: string | null; name_by_user?: string | null; model?: string | null; model_id?: string | null }>;
   language?: string;
-  locale?: { language?: string };
+  locale?: { language?: string; time_format?: string; time_zone?: string };
+  config?: { time_zone?: string };
   callService(domain: string, service: string, data?: Record<string, unknown>): Promise<unknown>;
   callWS<T>(message: Record<string, unknown>): Promise<T>;
   formatEntityState?(state: HassEntity): string;

@@ -14,6 +14,8 @@ import type { ControlEventDetail } from "../components/entity-control";
 import type { ApplianceAction } from "../components/action-buttons";
 import { fireMoreInfo } from "../helpers/actions";
 import { displayProgramName } from "../helpers/programs";
+import { formatDuration } from "../helpers/numbers";
+import { clockText, summarizeTimes, type TimeSummary } from "../helpers/times";
 import "../components/entity-control";
 import "../components/expandable-section";
 import "../components/action-buttons";
@@ -248,6 +250,19 @@ export abstract class BaseApplianceCard extends LitElement {
     if (entity) void this.withBusy(entity, () => pressEntity(this.hass!, entity));
   }
 
+  protected renderTimes(times: TimeSummary) {
+    const hass = this.hass!;
+    const chip = (label: string, value = "") => html`<span class="time-chip">${label}${value ? html` <b>${value}</b>` : nothing}</span>`;
+    const at = (key: string, fallback: string, epoch: number) => translate(hass, key, fallback).replace("{t}", clockText(hass, epoch));
+    if (times.phase === "finished") return html`<div class="times">${chip(at("time.done_at", "Done at {t}", times.finishedAt!))}</div>`;
+    if (times.phase === "idle") return html`<div class="times">${chip(translate(hass, "time.estimate", "Estimated duration"), formatDuration(hass, times.estimate!))}${chip(at("time.done_at_start", "Done at {t} if started", times.endsAt!))}</div>`;
+    return html`<div class="times">
+      ${times.elapsed !== undefined ? chip(translate(hass, "time.elapsed", "Running"), formatDuration(hass, times.elapsed)) : nothing}
+      ${times.remaining !== undefined ? chip(translate(hass, "time.done_in", "Done in"), formatDuration(hass, times.remaining)) : nothing}
+      ${times.endsAt !== undefined ? chip(at("time.done_at", "Done at {t}", times.endsAt)) : nothing}
+    </div>`;
+  }
+
   protected renderPower() {
     const power = this.getState("power_entity") || this.getState("power_state_entity");
     if (!power) return nothing;
@@ -315,6 +330,10 @@ export abstract class BaseApplianceCard extends LitElement {
     const program = active ? this.getState("active_program_entity") || this.getState("selected_program_entity") : this.getState("selected_program_entity");
     const remaining = this.getState("remaining_time_entity") || this.getState("finish_at_entity");
     const progress = progressValue(this.getState("progress_entity"));
+    const times = this.definition.kind === "oven" || this.definition.kind === "dishwasher"
+      ? summarizeTimes({ active, status: this.getState("operating_state_entity"), remaining: this.getState("remaining_time_entity"),
+        elapsed: this.getState("elapsed_time_entity"), estimate: this.getState("estimated_time_entity"), startIn: this.getState("start_in_entity"), now: Date.now() })
+      : undefined;
     const warnings = this.definition.fields.filter(f => f.warning).map(field => ({field, entity:this.getState(field.key)}))
       .filter(({field,entity}) => entity && isWarningActive(entity,field.warningStates,field.warningBelow));
     const metrics = this.definition.fields.filter(f => f.prominent).map(f=>this.getState(f.key)).filter(isAvailable);
@@ -329,8 +348,9 @@ export abstract class BaseApplianceCard extends LitElement {
           <span class="state-label ${mode}">${this.getState("connection_entity") ? html`<span class="connection-dot ${this.isOffline() ? "offline":""}" title=${translate(this.hass,this.isOffline()?"direct.disconnected":"direct.connected",this.isOffline()?"Device disconnected":"Connected")}></span>`:nothing}${headerStatus ? displayState(this.hass,headerStatus) : translate(this.hass,"ready","Ready")}</span>
         </header>
         ${warnings.length ? html`<div class="warning-strip">${warnings.map(({field,entity})=>html`<span class="notice">${fieldLabel(this.hass,field)}${entity?.entity_id.startsWith("binary_sensor.") ? "" : ": "+displayState(this.hass!,entity)}</span>`)}</div>`:nothing}
-        ${active && isAvailable(program) ? html`<div class="now-running"><span>${displayProgramName(this.hass,program!,this._config.program_names)}</span>${isAvailable(remaining) ? html`<strong>${displayState(this.hass,remaining)}</strong>`:nothing}</div>`:nothing}
+        ${active && isAvailable(program) ? html`<div class="now-running"><span>${displayProgramName(this.hass,program!,this._config.program_names)}</span>${isAvailable(remaining) && !times ? html`<strong>${displayState(this.hass,remaining)}</strong>`:nothing}</div>`:nothing}
         ${active && progress !== undefined && this._config.show_progress !== false ? html`<div class="progress-line"><span style=${`width:${progress}%`}></span></div>`:nothing}
+        ${times ? this.renderTimes(times) : nothing}
         ${metrics.length ? html`<div class="key-metrics">${metrics.map(e=>html`<strong>${displayState(this.hass!,e)}</strong>`)}</div>`:nothing}
         <div class="daily-controls">
           ${this.renderPower()}

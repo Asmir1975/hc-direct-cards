@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+- Oven and dishwasher: a time row shows running time, time left ("done in") and the finish time ("done at") while a program runs, the estimated duration and finish time before the start (including a set delayed start), and when a program finished. Times follow the Home Assistant 12/24 h setting. New optional entities: elapsed program time and estimated program time.
+
 ## 1.1.0 – 2026-10-30
 - Number values (target temperature, duration, start in, alarm, coffee amount and others) use a box with − and + buttons instead of a slider. Time values move in minutes and are shown as minutes or hours, temperatures in steps of 5. Repeated taps are sent as one value.
 - Hood: own power switch.

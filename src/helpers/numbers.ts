@@ -40,15 +40,26 @@ export function stepNumber(spec: NumberSpec, current: number, direction: 1 | -1)
   return round(Math.max(spec.min, Math.min(spec.max, snapped)));
 }
 
+/** Duration text such as "10 min", "1:30 h" or "1:05 min" (seconds only when not a whole minute). */
+export function formatDuration(hass: HomeAssistant, totalSeconds: number): string {
+  const seconds = Math.round(totalSeconds);
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds % 60;
+  if (rest) return `${minutes}:${String(rest).padStart(2, "0")} ${translate(hass, "unit.min", "min")}`;
+  if (minutes >= 60) return `${Math.floor(minutes / 60)}:${String(minutes % 60).padStart(2, "0")} h`;
+  return `${minutes} ${translate(hass, "unit.min", "min")}`;
+}
+
+/** Value of a duration sensor in seconds, whatever unit (s, min, h, d) the entity reports. */
+export function durationSeconds(entity?: HassEntity): number | undefined {
+  const value = numericState(entity);
+  if (value === undefined || !entity) return undefined;
+  const factor = DURATION_UNITS[String(entity.attributes.unit_of_measurement ?? "").trim().toLowerCase()];
+  return factor ? value * factor : undefined;
+}
+
 export function formatNumber(hass: HomeAssistant, spec: NumberSpec, value: number): string {
-  if (spec.duration) {
-    const seconds = Math.round(value * spec.unitSeconds);
-    const minutes = Math.floor(seconds / 60);
-    const rest = seconds % 60;
-    if (rest) return `${minutes}:${String(rest).padStart(2, "0")} ${translate(hass, "unit.min", "min")}`;
-    if (minutes >= 60) return `${Math.floor(minutes / 60)}:${String(minutes % 60).padStart(2, "0")} h`;
-    return `${minutes} ${translate(hass, "unit.min", "min")}`;
-  }
+  if (spec.duration) return formatDuration(hass, value * spec.unitSeconds);
   const text = value.toLocaleString(uiLanguage(hass), { maximumFractionDigits: 2 });
   return spec.unit ? `${text} ${spec.unit}` : text;
 }
