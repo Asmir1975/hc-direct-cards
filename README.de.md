@@ -147,18 +147,10 @@ standardmäßig.
   standardmäßig deaktiviert. In Home Assistant aktivieren, dann zeigen die Karten sie an.
 - Die Kochfeldanordnung ist nur für das Siemens EX851LYV5E bestätigt.
 
-## Entwicklung
-
-Sie brauchen Node.js 24. Führen Sie `npm ci`, `npm test` und `npm run build` aus. `npm run demo`
-startet eine Offline-Demo unter `http://localhost:5173/dev/demo/` (mit `?lang=en` die
-englischen Texte). Sie nutzt gespeicherte Beispiel-Entitäten und kontaktiert weder Home
-Assistant noch ein Gerät. Siehe [Architektur](docs/ARCHITECTURE.md),
-[Mitwirken](.github/CONTRIBUTING.md) und [Changelog](CHANGELOG.md).
-
 ## Autor, Dank und Lizenz
 
 Entwickelt von [Asmir1975](https://github.com/Asmir1975) unter der [MIT-Lizenz](LICENSE),
-dazu die [weiteren Lizenzhinweise](docs/legal/THIRD_PARTY_NOTICES.md).
+dazu die [weiteren Lizenzhinweise](docs/legal/THIRD_PARTY_NOTICES.md) und der [Changelog](CHANGELOG.md).
 
 Teile des Kartencodes gehen auf das
 [Home Connect Card Pack](https://github.com/leMax6608/home-connect-card-pack) von leMax6608

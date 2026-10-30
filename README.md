@@ -146,18 +146,10 @@ switches by default.
   default in the integration. Enable them in Home Assistant and the cards show them.
 - The hob layout is confirmed for the Siemens EX851LYV5E only.
 
-## Development
-
-You need Node.js 24. Run `npm ci`, `npm test` and `npm run build`. `npm run demo` starts an
-offline demo at `http://localhost:5173/dev/demo/` (add `?lang=en` for the English texts).
-It uses saved sample entities and never contacts Home Assistant or an appliance. See
-[Architecture](docs/ARCHITECTURE.md), [Contributing](.github/CONTRIBUTING.md) and
-[Changelog](CHANGELOG.md).
-
 ## Credits and license
 
 Made by [Asmir1975](https://github.com/Asmir1975) under the [MIT license](LICENSE). See
-also the [third-party notices](docs/legal/THIRD_PARTY_NOTICES.md).
+also the [third-party notices](docs/legal/THIRD_PARTY_NOTICES.md) and the [changelog](CHANGELOG.md).
 
 Parts of the card code derive from the
 [Home Connect Card Pack](https://github.com/leMax6608/home-connect-card-pack) by

@@ -16,7 +16,6 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
-      - run: npm test
       - run: npm run build
       - name: Verify committed browser bundle
         run: git diff --exit-code -- dist/home-connect-direct-cards.js

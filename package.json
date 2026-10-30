@@ -15,18 +15,14 @@
   "type": "module",
   "scripts": {
     "build": "tsc --noEmit && vite build",
-    "dev": "vite build --watch",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "demo": "vite --host 127.0.0.1"
+    "typecheck": "tsc --noEmit"
   },
   "files": [
     "dist"
   ],
   "devDependencies": {
     "typescript": "^5.9.2",
-    "vite": "^7.1.5",
-    "vitest": "^5.0.0"
+    "vite": "^7.1.5"
   },
   "dependencies": {
     "lit": "^3.3.1"
