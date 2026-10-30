@@ -6,12 +6,14 @@ import { registerElement } from "../helpers/register";
 import { fireMoreInfo } from "../helpers/actions";
 import { isControlAvailable, isReadonly } from "../helpers/controls";
 import { customProgramName } from "../helpers/programs";
+import { formatNumber, numberSpec, stepNumber } from "../helpers/numbers";
+import { translate } from "../helpers/localize";
 import type { ProgramNameMap } from "../types/config";
 
 export interface ControlEventDetail { entity: HassEntity; action: "toggle" | "select" | "number" | "press" | "brightness" | "fan"; value?: string | number; }
 
 export class EntityControl extends LitElement {
-  static properties = { hass: { attribute: false }, entity: { attribute: false }, valueLabels: { attribute: false }, label: {}, kind: {}, disabled: { type: Boolean }, busy: { type: Boolean } };
+  static properties = { hass: { attribute: false }, entity: { attribute: false }, valueLabels: { attribute: false }, label: {}, kind: {}, disabled: { type: Boolean }, busy: { type: Boolean }, _pending: { state: true } };
   hass?: HomeAssistant;
   entity?: HassEntity;
   valueLabels: ProgramNameMap = {};
@@ -19,6 +21,9 @@ export class EntityControl extends LitElement {
   kind: ControlKind = "status";
   disabled = false;
   busy = false;
+  private _pending?: number;
+  private _sendTimer?: ReturnType<typeof setTimeout>;
+  private _clearTimer?: ReturnType<typeof setTimeout>;
 
   static styles = css`
     :host { display: block; min-width: 0; }
@@ -37,9 +42,44 @@ export class EntityControl extends LitElement {
     input[type=range] { width: 100%; height: 18px; accent-color: var(--hc-accent); cursor: pointer; }
     .number-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 12px; }
     .number-value { font-weight: 650; font-variant-numeric: tabular-nums; }
+    .stepper { flex: none; display: inline-flex; align-items: stretch; height: 37px; border: 1px solid color-mix(in srgb, var(--divider-color), var(--primary-text-color) 8%); border-radius: 11px; overflow: hidden; background: var(--card-background-color); }
+    .stepper button { width: 38px; padding: 0; border: 0; color: var(--primary-text-color); background: transparent; font: inherit; font-size: 20px; line-height: 1; cursor: pointer; transition: background 120ms ease; }
+    .stepper button:hover:not(:disabled) { background: color-mix(in srgb, var(--hc-accent), transparent 82%); }
+    .stepper-value { min-width: 78px; padding: 0 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; border-inline: 1px solid color-mix(in srgb, var(--divider-color), var(--primary-text-color) 8%); }
     .unavailable { opacity: .58; }
     button:disabled, select:disabled, input:disabled { cursor: not-allowed; opacity: .55; }
   `;
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    clearTimeout(this._sendTimer);
+    clearTimeout(this._clearTimer);
+  }
+
+  protected willUpdate(changed: Map<string, unknown>): void {
+    const previous = changed.get("entity") as HassEntity | undefined;
+    // A newer value from Home Assistant replaces the locally shown one.
+    if (previous && this._pending !== undefined && this._sendTimer === undefined && previous.state !== this.entity?.state) this._pending = undefined;
+  }
+
+  private tap(direction: 1 | -1) {
+    if (!this.entity) return;
+    const spec = numberSpec(this.entity);
+    const base = this._pending ?? spec.value;
+    if (base === undefined) return;
+    const next = stepNumber(spec, base, direction);
+    if (next === base) return;
+    this._pending = next;
+    this.requestUpdate();
+    clearTimeout(this._sendTimer);
+    clearTimeout(this._clearTimer);
+    // Repeated taps add up; the value is sent once after a short pause.
+    this._sendTimer = setTimeout(() => {
+      this._sendTimer = undefined;
+      this.emit("number", next);
+      this._clearTimer = setTimeout(() => { this._pending = undefined; this.requestUpdate(); }, 4000);
+    }, 700);
+  }
 
   private emit(action: ControlEventDetail["action"], value?: string | number) {
     if (!this.entity || this.disabled || this.busy || (action === "press" ? this.entity.state === "unavailable" : !isControlAvailable(this.entity)) || isReadonly(this.entity)) return;
@@ -75,11 +115,18 @@ export class EntityControl extends LitElement {
       return html`<div class="line ${unavailable ? "unavailable" : ""}"><label class="label" for="select">${this.label}</label><select id="select" ?disabled=${blocked} @change=${(ev: Event) => this.emit("select", (ev.target as HTMLSelectElement).value)}>${!isAvailable(this.entity) ? html`<option value="" disabled selected>${displayState(this.hass, this.entity)}</option>` : nothing}${choices.map((option) => html`<option .value=${option} ?selected=${option === this.entity?.state}>${customProgramName(option, this.valueLabels) || displayState(this.hass!, { ...this.entity!, state: option })}</option>`)}</select></div>`;
     }
     if (this.kind === "number") {
-      const value = numericState(this.entity) ?? Number(this.entity.attributes.min ?? 0);
-      const min = Number(this.entity.attributes.min ?? 0);
-      const max = Number(this.entity.attributes.max ?? 100);
-      const step = Number(this.entity.attributes.step ?? 1);
-      return html`<div class="control ${unavailable ? "unavailable" : ""}"><div class="number-head"><label class="label" for="range">${this.label}</label><span class="number-value">${displayState(this.hass, this.entity)}</span></div><input id="range" type="range" min=${min} max=${max} step=${step} .value=${String(value)} ?disabled=${blocked} @change=${(ev: Event) => this.emit("number", Number((ev.target as HTMLInputElement).value))}></div>`;
+      const spec = numberSpec(this.entity);
+      const shown = this._pending ?? spec.value;
+      const text = shown === undefined ? displayState(this.hass, this.entity) : formatNumber(this.hass, spec, shown);
+      const atMin = shown !== undefined && shown <= spec.min;
+      const atMax = shown !== undefined && shown >= spec.max;
+      const less = translate(this.hass, "action.decrease", "Decrease");
+      const more = translate(this.hass, "action.increase", "Increase");
+      return html`<div class="line ${unavailable ? "unavailable" : ""}"><span class="label">${this.label}</span><div class="stepper" role="group" aria-label=${this.label}>
+        <button type="button" aria-label=${`${less}: ${this.label}`} ?disabled=${blocked || shown === undefined || atMin} @click=${() => this.tap(-1)}>−</button>
+        <span class="stepper-value" aria-live="polite">${text}</span>
+        <button type="button" aria-label=${`${more}: ${this.label}`} ?disabled=${blocked || shown === undefined || atMax} @click=${() => this.tap(1)}>+</button>
+      </div></div>`;
     }
     const displayed = customProgramName(this.entity.state, this.valueLabels) || displayState(this.hass, this.entity);
     return html`<button type="button" class="line status-line ${unavailable ? "unavailable" : ""}" @click=${() => fireMoreInfo(this, this.entity!.entity_id)} aria-label=${`${this.label}: ${displayed}`}><span class="label">${this.label}</span><span class="value">${displayed}</span></button>`;

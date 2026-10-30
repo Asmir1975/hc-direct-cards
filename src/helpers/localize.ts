@@ -2,6 +2,9 @@ import type { HomeAssistant } from "../types/home-assistant";
 import type { FieldDefinition } from "../types/schema";
 
 const de: Record<string, string> = {
+  "unit.min": "Min.",
+  "action.decrease": "Verringern",
+  "action.increase": "Erhöhen",
   "direct.move_rear": "Hinten",
   "direct.move_middle": "Mitte",
   "direct.move_front": "Vorne",
@@ -102,7 +105,8 @@ const de: Record<string, string> = {
   "field.filter_entity": "Maschinenreinigungsfilter", "field.aquastop_entity": "AquaStop aufgetreten",
   "field.heater_scale_entity": "Wasserheizung verkalkt", "field.current_temperature_entity": "Aktuelle Temperatur",
   "field.target_temperature_entity": "Solltemperatur", "field.duration_entity": "Dauer", "field.level_entity": "Stufe",
-  "field.rapid_preheat_entity": "Schnelles Vorheizen", "field.water_tank_entity": "Wassertank",
+  "field.rapid_preheat_entity": "Schnelles Vorheizen", "field.cavity_light_entity": "Garraumlicht",
+  "field.extra_dry_entity": "Extratrocknen", "field.intensive_zone_entity": "Intensivzone", "field.speed_on_demand_entity": "Schnell auf Knopfdruck", "field.water_tank_entity": "Wassertank",
   "field.alarm_entity": "Alarm", "field.child_lock_entity": "Kindersicherung",
   "field.display_brightness_entity": "Displayhelligkeit", "field.key_tones_entity": "Tastenton",
   "field.cooling_fan_entity": "Gebläse-Nachlaufzeit", "field.tone_duration_entity": "Signalton",

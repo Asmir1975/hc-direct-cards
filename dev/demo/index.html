@@ -44,7 +44,7 @@ document.querySelector("#check").onclick=async()=>{
    for(const section of card.shadowRoot.querySelectorAll("hcd-expandable-section"))section.open=true;
    await settle();
    for(const el of card.shadowRoot.querySelectorAll("hcd-entity-control")){
-    const label=el.shadowRoot?.querySelector(".label"),control=el.shadowRoot?.querySelector("select,button.switch,.value");
+    const label=el.shadowRoot?.querySelector(".label"),control=el.shadowRoot?.querySelector("select,button.switch,.value,.stepper");
     if(!label||!control||!label.getBoundingClientRect().height)continue;
     const a=label.getBoundingClientRect(),b=control.getBoundingClientRect();
     results.measuredControls++;

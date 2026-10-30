@@ -136,6 +136,9 @@ const specific: Record<ApplianceKind, Record<string, string[]>> = {
     "rapid_preheat_entity": [
       "switch_oven_fast_pre_heat"
     ],
+    "cavity_light_entity": [
+      "light_oven_cavity"
+    ],
     "water_tank_entity": [
       "sensor_oven_water_tank",
       "sensor_oven_water_tank_{cavity}"
@@ -188,6 +191,15 @@ const specific: Record<ApplianceKind, Record<string, string[]>> = {
     ],
     "hygiene_entity": [
       "switch_hygiene_plus"
+    ],
+    "extra_dry_entity": [
+      "switch_extra_dry"
+    ],
+    "intensive_zone_entity": [
+      "switch_intensiv_zone"
+    ],
+    "speed_on_demand_entity": [
+      "switch_speed_on_demand"
     ],
     "half_load_entity": [
       "switch_half_load"
