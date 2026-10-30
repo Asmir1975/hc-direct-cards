@@ -98,6 +98,29 @@ export function resolveAccentColor(value: string | undefined, fallback: string):
   return fallback;
 }
 
+export type StateTone = "success" | "warning" | "error" | "";
+
+/**
+ * Tone of the operation state shown in the card header. The states come from the appliance's own
+ * operation state (inactive, ready, delayedstart, run, pause, actionrequired, finished, error, aborting).
+ */
+export function stateTone(state?: HassEntity): StateTone {
+  if (!state || !isAvailable(state)) return "";
+  switch (canonicalState(state)) {
+    case "finished": return "success";
+    case "actionrequired":
+    case "aborting": return "warning";
+    case "error": return "error";
+    default: return "";
+  }
+}
+
+/** Current program phase (dishwasher: main wash, drying; coffee machine: grinding, brewing), empty when there is none. */
+export function phaseText(hass: HomeAssistant, phase: HassEntity | undefined, running: boolean): string {
+  if (!running || !phase || !isAvailable(phase) || ["none", ""].includes(canonicalState(phase))) return "";
+  return displayState(hass, phase);
+}
+
 export type ApplianceMode = "off" | "idle" | "running" | "paused" | "unavailable";
 
 export function isActiveMode(mode: ApplianceMode): boolean {

@@ -12,6 +12,10 @@ export const commonCardStyles = css`
   .connection-dot { display:inline-block; width:6px;height:6px;border-radius:50%;background:var(--success-color,#479c70);margin-right:6px; }
   .connection-dot.offline { background:var(--error-color,#bb4845); }
   .state-label.running { color:var(--primary-text-color); background:color-mix(in srgb,var(--hc-accent),transparent 91%); }
+  .state-label.success { color:var(--success-color,#2e8b57); background:color-mix(in srgb,var(--success-color,#2e8b57),transparent 88%); }
+  .state-label.warning { color:var(--warning-color,#af6f18); background:color-mix(in srgb,var(--warning-color,#af6f18),transparent 88%); }
+  .state-label.error { color:var(--error-color,#bb4845); background:color-mix(in srgb,var(--error-color,#bb4845),transparent 88%); }
+  .now-running .phase { font-style:normal; color:var(--secondary-text-color); }
   .state-label.paused { color:var(--warning-color,#af6f18); }
   .daily-controls { padding:0 20px 18px; display:grid; gap:14px; }
   .power-row { padding:0 0 10px; border-bottom:1px solid var(--divider-color); }

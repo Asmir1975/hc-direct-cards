@@ -180,6 +180,9 @@ const specific: Record<ApplianceKind, Record<string, string[]>> = {
     ]
   },
   "dishwasher": {
+    "phase_entity": [
+      "sensor_program_phase"
+    ],
     "water_entity": [
       "sensor_water_forecast"
     ],

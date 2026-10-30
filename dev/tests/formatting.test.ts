@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canonicalState, cleanLabel, deriveMode, displayState, isActiveMode, isWarningActive, progressValue, resolveAccentColor } from "../../src/helpers/formatting";
+import { canonicalState, cleanLabel, deriveMode, displayState, isActiveMode, isWarningActive, phaseText, progressValue, resolveAccentColor, stateTone } from "../../src/helpers/formatting";
 import type { HassEntity, HomeAssistant } from "../../src/types/home-assistant";
 
 function entity(state: string, entityId = "sensor.test", attributes: HassEntity["attributes"] = {}): HassEntity {
@@ -57,5 +57,28 @@ describe("Home Connect state formatting", () => {
     expect(resolveAccentColor("oklch(70% 0.15 240)", "blue")).toBe("oklch(70% 0.15 240)");
     expect(resolveAccentColor("red; display:none", "blue")).toBe("blue");
     expect(resolveAccentColor("#12345", "blue")).toBe("blue");
+  });
+});
+
+describe("operation state and program phase", () => {
+  const e = (state: string): HassEntity => ({ entity_id: "sensor.s", state, attributes: {}, last_changed: "", last_updated: "" });
+  const hassFmt = { language: "de", formatEntityState: (value: HassEntity) => ({ finalrinse: "Klarspülen", none: "Keine" }[value.state] ?? value.state) } as unknown as HomeAssistant;
+
+  it("colors the states that need attention or mean done", () => {
+    expect(stateTone(e("BSH.Common.EnumType.OperationState.Finished"))).toBe("success");
+    expect(stateTone(e("finished"))).toBe("success");
+    expect(stateTone(e("actionrequired"))).toBe("warning");
+    expect(stateTone(e("aborting"))).toBe("warning");
+    expect(stateTone(e("error"))).toBe("error");
+    expect(stateTone(e("run"))).toBe("");
+    expect(stateTone(e("unavailable"))).toBe("");
+    expect(stateTone(undefined)).toBe("");
+  });
+
+  it("shows the program phase only while the appliance runs and a phase is set", () => {
+    expect(phaseText(hassFmt, e("finalrinse"), true)).toBe("Klarspülen");
+    expect(phaseText(hassFmt, e("finalrinse"), false)).toBe("");
+    expect(phaseText(hassFmt, e("none"), true)).toBe("");
+    expect(phaseText(hassFmt, undefined, true)).toBe("");
   });
 });

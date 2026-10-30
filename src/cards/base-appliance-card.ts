@@ -5,7 +5,7 @@ import type { ApplianceCardConfig } from "../types/config";
 import type { HomeAssistant, HassEntity } from "../types/home-assistant";
 import type { ApplianceDefinition, FieldDefinition, SectionId } from "../types/schema";
 import { configuredEntityIds, relevantStatesChanged, stateFor } from "../helpers/entity";
-import { canonicalState, deriveMode, displayState, isOn, isActiveMode, isAvailable, isWarningActive, progressValue, resolveAccentColor } from "../helpers/formatting";
+import { canonicalState, deriveMode, displayState, phaseText, stateTone, isOn, isActiveMode, isAvailable, isWarningActive, progressValue, resolveAccentColor } from "../helpers/formatting";
 import { discoverEntities, discoveryKey } from "../helpers/registry";
 import { isReadonly, showQuantityField } from "../helpers/controls";
 import { setBrightness, setFanSpeed, pressEntity, selectOption, setNumber, toggleEntity } from "../helpers/services";
@@ -352,6 +352,7 @@ export abstract class BaseApplianceCard extends LitElement {
         elapsed: this.getState("elapsed_time_entity"), estimate: this.getState("estimated_time_entity"), startIn: this.getState("start_in_entity"),
         smartStart: isOn(this.getState("smart_start_entity")) || isOn(this.getState("auto_smart_start_entity")), now: Date.now() })
       : undefined;
+    const phase = phaseText(this.hass, this.getState("phase_entity"), active);
     const message = messageNotice(this.hass, this.getState("messages_entity"));
     const warnings = this.definition.fields.filter(f => f.warning && f.key !== "messages_entity").map(field => ({field, entity:this.getState(field.key)}))
       .filter(({field,entity}) => entity && isWarningActive(entity,field.warningStates,field.warningBelow));
@@ -364,11 +365,11 @@ export abstract class BaseApplianceCard extends LitElement {
             <span class="eyebrow">HOME CONNECT DIRECT · ${translate(this.hass,"device."+this.definition.kind,this.definition.defaultName)}</span>
             <span class="card-title">${this._config.name || this.hass.devices?.[this._config.device_id || ""]?.name_by_user || this.hass.devices?.[this._config.device_id || ""]?.name || translate(this.hass,"device."+this.definition.kind,this.definition.defaultName)}</span>
           </button>
-          <span class="state-label ${mode}">${this.getState("connection_entity") ? html`<span class="connection-dot ${this.isOffline() ? "offline":""}" title=${translate(this.hass,this.isOffline()?"direct.disconnected":"direct.connected",this.isOffline()?"Device disconnected":"Connected")}></span>`:nothing}${headerStatus ? displayState(this.hass,headerStatus) : translate(this.hass,"ready","Ready")}</span>
+          <span class="state-label ${mode} ${stateTone(status)}">${this.getState("connection_entity") ? html`<span class="connection-dot ${this.isOffline() ? "offline":""}" title=${translate(this.hass,this.isOffline()?"direct.disconnected":"direct.connected",this.isOffline()?"Device disconnected":"Connected")}></span>`:nothing}${headerStatus ? displayState(this.hass,headerStatus) : translate(this.hass,"ready","Ready")}</span>
         </header>
         ${message ? html`<div class="warning-strip"><span class="notice ${message.tone}" role="status"><ha-icon .icon=${message.icon}></ha-icon>${message.text}</span></div>`:nothing}
         ${warnings.length ? html`<div class="warning-strip">${warnings.map(({field,entity})=>html`<span class="notice">${fieldLabel(this.hass,field)}${entity?.entity_id.startsWith("binary_sensor.") ? "" : ": "+displayState(this.hass!,entity)}</span>`)}</div>`:nothing}
-        ${active && isAvailable(program) ? html`<div class="now-running"><span>${displayProgramName(this.hass,program!,this._config.program_names)}</span>${isAvailable(remaining) && !times ? html`<strong>${displayState(this.hass,remaining)}</strong>`:nothing}</div>`:nothing}
+        ${active && isAvailable(program) ? html`<div class="now-running"><span>${displayProgramName(this.hass,program!,this._config.program_names)}${phase ? html` <em class="phase">· ${phase}</em>` : nothing}</span>${isAvailable(remaining) && !times ? html`<strong>${displayState(this.hass,remaining)}</strong>`:nothing}</div>`:nothing}
         ${active && progress !== undefined && this._config.show_progress !== false ? html`<div class="progress-line"><span style=${`width:${progress}%`}></span></div>`:nothing}
         ${times ? this.renderTimes(times) : nothing}
         ${metrics.length ? html`<div class="key-metrics">${metrics.map(e=>html`<strong>${displayState(this.hass!,e)}</strong>`)}</div>`:nothing}

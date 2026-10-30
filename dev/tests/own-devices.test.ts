@@ -30,6 +30,7 @@ describe("Saved device profiles and DEV entity snapshots",()=>{
     const d=await discoverEntities(dish,fixture.models.dishwasher.registry[0].entity_id,dishwasherDefinition,{type:dishwasherDefinition.cardType});
     expect(d.smart_start_entity).toBe("switch.siemens_dishwasher_smart_start");
     expect(d.auto_smart_start_entity).toBe("switch.siemens_dishwasher_automatischer_smart_start");
+    expect(d.phase_entity).toBe("sensor.siemens_dishwasher_programmphase");
     expect(d.extra_dry_entity).toBe("switch.siemens_dishwasher_extratrocknen");
     expect(d.intensive_zone_entity).toBe("switch.siemens_dishwasher_intensivzone");
     expect(d.speed_on_demand_entity).toBe("switch.siemens_dishwasher_schnell_auf_knopfdruck");
