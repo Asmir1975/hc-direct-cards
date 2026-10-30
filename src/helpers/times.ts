@@ -17,6 +17,10 @@ export interface TimeSummary {
   endsAt?: number;
   /** Expected end if the program is started with the set delay, epoch milliseconds. */
   delayedEndsAt?: number;
+  /** Time until done including the start delay (start in plus program time), seconds. */
+  endsIn?: number;
+  /** Smart Start is on, so the appliance may change the start delay and with it all times. */
+  smartStart?: boolean;
   /** When the program finished, epoch milliseconds. */
   finishedAt?: number;
 }
@@ -30,6 +34,7 @@ export interface TimeInputs {
   estimate?: HassEntity;
   /** The delayed-start setting. */
   startIn?: HassEntity;
+  smartStart?: boolean;
   now: number;
 }
 
@@ -48,7 +53,7 @@ export function summarizeTimes(input: TimeInputs): TimeSummary | undefined {
   if (input.active && input.status && isAvailable(input.status) && canonicalState(input.status) === "delayedstart") {
     // While the start is delayed "start in" counts down and the program time stays whole (own device logs).
     if (!delay) return undefined;
-    return { phase: "delayed", startsIn: delay, remaining: left, endsAt: left === undefined ? undefined : input.now + (delay + left) * 1000 };
+    return { phase: "delayed", startsIn: delay, remaining: left, endsIn: left === undefined ? undefined : delay + left, endsAt: left === undefined ? undefined : input.now + (delay + left) * 1000, smartStart: input.smartStart };
   }
   if (input.active) {
     if (left === undefined && !elapsed) return undefined;
@@ -59,7 +64,10 @@ export function summarizeTimes(input: TimeInputs): TimeSummary | undefined {
     return Number.isFinite(since) ? { phase: "finished", finishedAt: since } : undefined;
   }
   if (estimate && estimate > 60) {
-    return { phase: "idle", estimate, endsAt: input.now + estimate * 1000, delayedEndsAt: delay > 0 ? input.now + (delay + estimate) * 1000 : undefined };
+    return {
+      phase: "idle", estimate, endsAt: input.now + estimate * 1000,
+      delayedEndsAt: delay > 0 ? input.now + (delay + estimate) * 1000 : undefined, endsIn: delay > 0 ? delay + estimate : undefined, smartStart: input.smartStart,
+    };
   }
   return undefined;
 }

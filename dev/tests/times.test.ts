@@ -29,7 +29,7 @@ describe("program times", () => {
 
   it("shows the expected total and end before the start, including a delayed start", () => {
     const summary = summarizeTimes({ active: false, estimate: sensor("2", "h"), startIn: sensor("30", "min"), now })!;
-    expect(summary).toMatchObject({ phase: "idle", estimate: 7200, endsAt: now + 7200_000, delayedEndsAt: now + 9000_000 });
+    expect(summary).toMatchObject({ phase: "idle", estimate: 7200, endsAt: now + 7200_000, delayedEndsAt: now + 9000_000, endsIn: 9000 });
     expect(summarizeTimes({ active: false, estimate: sensor("2", "h"), now })!.delayedEndsAt).toBeUndefined();
     expect(summarizeTimes({ active: false, now })).toBeUndefined();
   });
@@ -37,7 +37,9 @@ describe("program times", () => {
   it("counts a delayed start down and adds it to the end time", () => {
     const status = state("BSH.Common.EnumType.OperationState.DelayedStart", "2026-10-30T19:00:00+00:00");
     const summary = summarizeTimes({ active: true, status, startIn: sensor("249", "min"), remaining: sensor("1", "h"), now })!;
-    expect(summary).toMatchObject({ phase: "delayed", startsIn: 14940, remaining: 3600, endsAt: now + (14940 + 3600) * 1000 });
+    expect(summary).toMatchObject({ phase: "delayed", startsIn: 14940, remaining: 3600, endsIn: 18540, endsAt: now + 18540 * 1000 });
+    expect(summary.smartStart).toBeUndefined();
+    expect(summarizeTimes({ active: true, status, startIn: sensor("249", "min"), remaining: sensor("1", "h"), smartStart: true, now })!.smartStart).toBe(true);
   });
 
   it("shows when a finished program ended", () => {

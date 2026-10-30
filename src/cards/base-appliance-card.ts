@@ -268,9 +268,10 @@ export abstract class BaseApplianceCard extends LitElement {
     const hass = this.hass!;
     const chip = (label: string, value = "") => html`<span class="time-chip">${label}${value ? html` <b>${value}</b>` : nothing}</span>`;
     const at = (key: string, fallback: string, epoch: number) => translate(hass, key, fallback).replace("{t}", clockText(hass, epoch));
-    if (times.phase === "delayed") return html`<div class="times">${chip(translate(hass, "time.starts_in", "Starts in"), formatDuration(hass, times.startsIn!))}${times.endsAt !== undefined ? chip(at("time.done_at", "Done at {t}", times.endsAt)) : nothing}</div>`;
+    const smart = times.smartStart ? chip(translate(hass, "time.smart_changes", "Smart Start: times can change")) : nothing;
+    if (times.phase === "delayed") return html`<div class="times">${chip(translate(hass, "time.starts_in", "Starts in"), formatDuration(hass, times.startsIn!))}${times.endsIn !== undefined ? chip(translate(hass, "time.done_in", "Done in"), formatDuration(hass, times.endsIn)) : nothing}${times.endsAt !== undefined ? chip(at("time.done_at", "Done at {t}", times.endsAt)) : nothing}${smart}</div>`;
     if (times.phase === "finished") return html`<div class="times">${chip(at("time.done_at", "Done at {t}", times.finishedAt!))}</div>`;
-    if (times.phase === "idle") return html`<div class="times">${chip(translate(hass, "time.estimate", "Estimated duration"), formatDuration(hass, times.estimate!))}${chip(at("time.done_at_start", "Done at {t} if started", times.endsAt!))}${times.delayedEndsAt !== undefined ? chip(at("time.done_at_delay", "With the delay done at {t}", times.delayedEndsAt)) : nothing}</div>`;
+    if (times.phase === "idle") return html`<div class="times">${chip(translate(hass, "time.estimate", "Estimated duration"), formatDuration(hass, times.estimate!))}${chip(at("time.done_at_start", "Done at {t} if started", times.endsAt!))}${times.delayedEndsAt !== undefined ? chip(translate(hass, "time.done_in_delay", "With the delay done in {d} at {t}").replace("{d}", formatDuration(hass, times.endsIn!)).replace("{t}", clockText(hass, times.delayedEndsAt))) : nothing}${smart}</div>`;
     return html`<div class="times">
       ${times.elapsed !== undefined ? chip(translate(hass, "time.elapsed", "Running"), formatDuration(hass, times.elapsed)) : nothing}
       ${times.remaining !== undefined ? chip(translate(hass, "time.done_in", "Done in"), formatDuration(hass, times.remaining)) : nothing}
@@ -348,7 +349,8 @@ export abstract class BaseApplianceCard extends LitElement {
     const progress = progressValue(this.getState("progress_entity"));
     const times = this.definition.kind === "oven" || this.definition.kind === "dishwasher"
       ? summarizeTimes({ active, status: this.getState("operating_state_entity"), remaining: this.getState("remaining_time_entity"),
-        elapsed: this.getState("elapsed_time_entity"), estimate: this.getState("estimated_time_entity"), startIn: this.getState("start_in_entity"), now: Date.now() })
+        elapsed: this.getState("elapsed_time_entity"), estimate: this.getState("estimated_time_entity"), startIn: this.getState("start_in_entity"),
+        smartStart: isOn(this.getState("smart_start_entity")) || isOn(this.getState("auto_smart_start_entity")), now: Date.now() })
       : undefined;
     const message = messageNotice(this.hass, this.getState("messages_entity"));
     const warnings = this.definition.fields.filter(f => f.warning && f.key !== "messages_entity").map(field => ({field, entity:this.getState(field.key)}))
