@@ -314,8 +314,8 @@ const ct = (n, e) => {
   let s, r = e === 2 ? "<svg>" : e === 3 ? "<math>" : "", o = Z;
   for (let l = 0; l < t; l++) {
     const a = n[l];
-    let c, u, p = -1, f = 0;
-    for (; f < a.length && (o.lastIndex = f, u = o.exec(a), u !== null); ) f = o.lastIndex, o === Z ? u[1] === "!--" ? o = Se : u[1] !== void 0 ? o = ze : u[2] !== void 0 ? (He.test(u[2]) && (s = RegExp("</" + u[2], "g")), o = E) : u[3] !== void 0 && (o = E) : o === E ? u[0] === ">" ? (o = s ?? Z, p = -1) : u[1] === void 0 ? p = -2 : (p = o.lastIndex - u[2].length, c = u[1], o = u[3] === void 0 ? E : u[3] === '"' ? Ee : Ae) : o === Ee || o === Ae ? o = E : o === Se || o === ze ? o = Z : (o = E, s = void 0);
+    let c, u, p = -1, y = 0;
+    for (; y < a.length && (o.lastIndex = y, u = o.exec(a), u !== null); ) y = o.lastIndex, o === Z ? u[1] === "!--" ? o = Se : u[1] !== void 0 ? o = ze : u[2] !== void 0 ? (He.test(u[2]) && (s = RegExp("</" + u[2], "g")), o = E) : u[3] !== void 0 && (o = E) : o === E ? u[0] === ">" ? (o = s ?? Z, p = -1) : u[1] === void 0 ? p = -2 : (p = o.lastIndex - u[2].length, c = u[1], o = u[3] === void 0 ? E : u[3] === '"' ? Ee : Ae) : o === Ee || o === Ae ? o = E : o === Se || o === ze ? o = Z : (o = E, s = void 0);
     const b = o === E && n[l + 1].startsWith("/>") ? " " : "";
     r += o === Z ? a + ot : p >= 0 ? (i.push(c), a.slice(0, p) + Fe + a.slice(p) + S + b) : a + S + (p === -2 ? l : b);
   }
@@ -334,15 +334,15 @@ class K {
     for (; (s = T.nextNode()) !== null && a.length < l; ) {
       if (s.nodeType === 1) {
         if (s.hasAttributes()) for (const p of s.getAttributeNames()) if (p.endsWith(Fe)) {
-          const f = u[o++], b = s.getAttribute(p).split(S), k = /([.?@])?(.*)/.exec(f);
+          const y = u[o++], b = s.getAttribute(p).split(S), k = /([.?@])?(.*)/.exec(y);
           a.push({ type: 1, index: r, name: k[2], strings: b, ctor: k[1] === "." ? ht : k[1] === "?" ? _t : k[1] === "@" ? ut : se }), s.removeAttribute(p);
         } else p.startsWith(S) && (a.push({ type: 6, index: r }), s.removeAttribute(p));
         if (He.test(s.tagName)) {
-          const p = s.textContent.split(S), f = p.length - 1;
-          if (f > 0) {
+          const p = s.textContent.split(S), y = p.length - 1;
+          if (y > 0) {
             s.textContent = ie ? ie.emptyScript : "";
-            for (let b = 0; b < f; b++) s.append(p[b], W()), T.nextNode(), a.push({ type: 2, index: ++r });
-            s.append(p[f], W());
+            for (let b = 0; b < y; b++) s.append(p[b], W()), T.nextNode(), a.push({ type: 2, index: ++r });
+            s.append(p[y], W());
           }
         }
       } else if (s.nodeType === 8) if (s.data === Be) a.push({ type: 2, index: r });
@@ -984,7 +984,7 @@ async function je(n, e, t, i) {
   const o = s.filter((c) => c.device_id === r.device_id && !c.disabled_by && !c.hidden_by && (r.platform !== "homeconnect_ws" || c.platform === "homeconnect_ws")), l = {}, a = new Set(Object.entries(i).filter(([c, u]) => c !== "entity" && typeof u == "string" && u.includes(".")).map(([, c]) => c));
   for (const c of t.fields) {
     if (c.key === "entity" || i[c.key]) continue;
-    const u = o.filter((p) => !a.has(p.entity_id)).map((p) => ({ entry: p, score: wt(n, p, c, t) })).filter(({ score: p }) => p >= 50).sort((p, f) => f.score - p.score || p.entry.entity_id.localeCompare(f.entry.entity_id));
+    const u = o.filter((p) => !a.has(p.entity_id)).map((p) => ({ entry: p, score: wt(n, p, c, t) })).filter(({ score: p }) => p >= 50).sort((p, y) => y.score - p.score || p.entry.entity_id.localeCompare(y.entry.entity_id));
     u[0] && !(u[0].score >= 980 && u[1]?.score === u[0].score) && (l[c.key] = u[0].entry.entity_id, a.add(u[0].entry.entity_id));
   }
   return { anchor: r, candidates: o, suggestions: l };
@@ -1998,7 +1998,7 @@ function Wt(n) {
   const t = Number(e[1] || 0), i = Number(e[2] || 0) + Math.floor(Number(e[3] || 0) / 60);
   return t ? `${t}:${String(i).padStart(2, "0")} h` : `${i} min`;
 }
-function y(n, e) {
+function f(n, e) {
   if (!e) return h(n, "not_configured", "Not configured");
   if (!m(e)) return e?.state === "unavailable" ? h(n, "unavailable", "Unavailable") : h(n, "unknown", "Unknown");
   if (n.formatEntityState)
@@ -2064,8 +2064,8 @@ function Jt(n) {
       return "";
   }
 }
-function Yt(n, e, t) {
-  return !t || !e || !m(e) || ["none", ""].includes(v(e)) ? "" : y(n, e);
+function Yt(n, e, t, i) {
+  return t ? e && m(e) && !["none", ""].includes(v(e)) ? f(n, e) : i && m(i) ? f(n, i) : "" : "";
 }
 function Qt(n) {
   return n === "running" || n === "paused";
@@ -2145,7 +2145,7 @@ function de(n, e) {
   return e?.[n]?.trim() || void 0;
 }
 function si(n, e, t) {
-  return de(e.state, t) || y(n, e);
+  return de(e.state, t) || f(n, e);
 }
 const Ke = { s: 1, sec: 1, min: 60, h: 3600, d: 86400 };
 function ri(n) {
@@ -2218,7 +2218,7 @@ function hi(n, e) {
   const t = e.state.trim().toLowerCase();
   if (!t || t === "none" || t === "off") return;
   const i = di(t);
-  return { text: y(n, e), tone: i, icon: ci[i] };
+  return { text: f(n, e), tone: i, icon: ci[i] };
 }
 class _i extends x {
   constructor() {
@@ -2293,17 +2293,17 @@ class _i extends x {
     }
     if (this.kind === "select") {
       const s = this.entity.attributes.options || [], r = s.includes(this.entity.state) || !m(this.entity) ? s : [this.entity.state, ...s];
-      return _`<div class="line ${e ? "unavailable" : ""}"><label class="label" for="select">${this.label}</label><select id="select" ?disabled=${t} @change=${(o) => this.emit("select", o.target.value)}>${m(this.entity) ? d : _`<option value="" disabled selected>${y(this.hass, this.entity)}</option>`}${r.map((o) => _`<option .value=${o} ?selected=${o === this.entity?.state}>${de(o, this.valueLabels) || y(this.hass, { ...this.entity, state: o })}</option>`)}</select></div>`;
+      return _`<div class="line ${e ? "unavailable" : ""}"><label class="label" for="select">${this.label}</label><select id="select" ?disabled=${t} @change=${(o) => this.emit("select", o.target.value)}>${m(this.entity) ? d : _`<option value="" disabled selected>${f(this.hass, this.entity)}</option>`}${r.map((o) => _`<option .value=${o} ?selected=${o === this.entity?.state}>${de(o, this.valueLabels) || f(this.hass, { ...this.entity, state: o })}</option>`)}</select></div>`;
     }
     if (this.kind === "number") {
-      const s = Ne(this.entity, this.stepSeconds), r = this._pending ?? s.value, o = r === void 0 ? y(this.hass, this.entity) : ai(this.hass, s, r), l = r !== void 0 && r <= s.min, a = r !== void 0 && r >= s.max, c = h(this.hass, "action.decrease", "Decrease"), u = h(this.hass, "action.increase", "Increase");
+      const s = Ne(this.entity, this.stepSeconds), r = this._pending ?? s.value, o = r === void 0 ? f(this.hass, this.entity) : ai(this.hass, s, r), l = r !== void 0 && r <= s.min, a = r !== void 0 && r >= s.max, c = h(this.hass, "action.decrease", "Decrease"), u = h(this.hass, "action.increase", "Increase");
       return _`<div class="line ${e ? "unavailable" : ""}"><span class="label">${this.label}</span><div class="stepper" role="group" aria-label=${this.label}>
         <button type="button" aria-label=${`${c}: ${this.label}`} ?disabled=${t || r === void 0 || l} @click=${() => this.tap(-1)}>−</button>
         <span class="stepper-value" aria-live="polite">${o}</span>
         <button type="button" aria-label=${`${u}: ${this.label}`} ?disabled=${t || r === void 0 || a} @click=${() => this.tap(1)}>+</button>
       </div></div>`;
     }
-    const i = de(this.entity.state, this.valueLabels) || y(this.hass, this.entity);
+    const i = de(this.entity.state, this.valueLabels) || f(this.hass, this.entity);
     return _`<button type="button" class="line status-line ${e ? "unavailable" : ""}" @click=${() => fe(this, this.entity.entity_id)} aria-label=${`${this.label}: ${i}`}><span class="label">${this.label}</span><span class="value">${i}</span></button>`;
   }
 }
@@ -2561,7 +2561,7 @@ class X extends x {
   renderActions(e) {
     if (!this._config || !this.hass || e === "off" || e === "unavailable") return d;
     const i = (e === "paused" ? [["resume_entity", h(this.hass, "action.resume", "Resume"), "mdi:play", !0, !1], ["cancel_entity", h(this.hass, "action.cancel", "Cancel"), "mdi:stop", !1, !0]] : e === "running" ? [["pause_entity", h(this.hass, "action.pause", "Pause"), "mdi:pause", !1, !1], ["cancel_entity", h(this.hass, "action.cancel", "Cancel"), "mdi:stop", !1, !0]] : [["start_entity", h(this.hass, "action.start", "Start"), "mdi:play", !0, !1]]).flatMap(([s, r, o, l, a]) => {
-      if (!this.definition.fields.some((f) => f.key === s)) return [];
+      if (!this.definition.fields.some((y) => y.key === s)) return [];
       const c = this._config?.[s], u = typeof c == "string" ? this.hass?.states[c] : void 0, p = u?.entity_id.split(".")[0];
       return u ? [{ key: s, label: r, confirmLabel: a ? h(this.hass, "action.confirm_cancel", "Confirm cancel") : void 0, icon: o, entityId: c, primary: l, danger: a, disabled: u.state === "unavailable" || p !== "button" && p !== "input_button" }] : [];
     });
@@ -2600,7 +2600,7 @@ class X extends x {
       startIn: this.getState("start_in_entity"),
       smartStart: L(this.getState("smart_start_entity")) || L(this.getState("auto_smart_start_entity")),
       now: Date.now()
-    }) : void 0, u = Yt(this.hass, this.getState("phase_entity"), s), p = hi(this.hass, this.getState("messages_entity")), f = this.definition.fields.filter((g) => g.warning && g.key !== "messages_entity").map((g) => ({ field: g, entity: this.getState(g.key) })).filter(({ field: g, entity: A }) => A && Kt(A, g.warningStates, g.warningBelow)), b = this.definition.fields.filter((g) => g.prominent).map((g) => this.getState(g.key)).filter(m), k = Gt(this._config.accent_color, this.definition.accent);
+    }) : void 0, u = Yt(this.hass, this.getState("phase_entity"), s, this.getState("operating_state_entity")), p = hi(this.hass, this.getState("messages_entity")), y = this.definition.fields.filter((g) => g.warning && g.key !== "messages_entity").map((g) => ({ field: g, entity: this.getState(g.key) })).filter(({ field: g, entity: A }) => A && Kt(A, g.warningStates, g.warningBelow)), b = this.definition.fields.filter((g) => g.prominent).map((g) => this.getState(g.key)).filter(m), k = Gt(this._config.accent_color, this.definition.accent);
     return _`<ha-card style=${Bt({ "--hc-accent": k })} @hcd-control=${this.handleControl} @hcd-action=${this.handleAction}>
       <div class="shell">
         <header class="card-header">
@@ -2608,14 +2608,14 @@ class X extends x {
             <span class="eyebrow">HOME CONNECT DIRECT · ${h(this.hass, "device." + this.definition.kind, this.definition.defaultName)}</span>
             <span class="card-title">${this._config.name || this.hass.devices?.[this._config.device_id || ""]?.name_by_user || this.hass.devices?.[this._config.device_id || ""]?.name || h(this.hass, "device." + this.definition.kind, this.definition.defaultName)}</span>
           </button>
-          <span class="state-label ${i} ${Jt(e)}">${this.getState("connection_entity") ? _`<span class="connection-dot ${this.isOffline() ? "offline" : ""}" title=${h(this.hass, this.isOffline() ? "direct.disconnected" : "direct.connected", this.isOffline() ? "Device disconnected" : "Connected")}></span>` : d}${r ? y(this.hass, r) : h(this.hass, "ready", "Ready")}</span>
+          <span class="state-label ${i} ${Jt(e)}">${this.getState("connection_entity") ? _`<span class="connection-dot ${this.isOffline() ? "offline" : ""}" title=${h(this.hass, this.isOffline() ? "direct.disconnected" : "direct.connected", this.isOffline() ? "Device disconnected" : "Connected")}></span>` : d}${r ? f(this.hass, r) : h(this.hass, "ready", "Ready")}</span>
         </header>
         ${p ? _`<div class="warning-strip"><span class="notice ${p.tone}" role="status"><ha-icon .icon=${p.icon}></ha-icon>${p.text}</span></div>` : d}
-        ${f.length ? _`<div class="warning-strip">${f.map(({ field: g, entity: A }) => _`<span class="notice">${N(this.hass, g)}${A?.entity_id.startsWith("binary_sensor.") ? "" : ": " + y(this.hass, A)}</span>`)}</div>` : d}
-        ${s && m(o) ? _`<div class="now-running"><span>${si(this.hass, o, this._config.program_names)}${u ? _` <em class="phase">· ${u}</em>` : d}</span>${m(l) && !c ? _`<strong>${y(this.hass, l)}</strong>` : d}</div>` : d}
+        ${y.length ? _`<div class="warning-strip">${y.map(({ field: g, entity: A }) => _`<span class="notice">${N(this.hass, g)}${A?.entity_id.startsWith("binary_sensor.") ? "" : ": " + f(this.hass, A)}</span>`)}</div>` : d}
+        ${s && m(o) ? _`<div class="now-running"><span>${si(this.hass, o, this._config.program_names)}${u ? _` <em class="phase">· ${u}</em>` : d}</span>${m(l) && !c ? _`<strong>${f(this.hass, l)}</strong>` : d}</div>` : d}
         ${s && a !== void 0 && this._config.show_progress !== !1 ? _`<div class="progress-line"><span style=${`width:${a}%`}></span></div>` : d}
         ${c ? this.renderTimes(c) : d}
-        ${b.length ? _`<div class="key-metrics">${b.map((g) => _`<strong>${y(this.hass, g)}</strong>`)}</div>` : d}
+        ${b.length ? _`<div class="key-metrics">${b.map((g) => _`<strong>${f(this.hass, g)}</strong>`)}</div>` : d}
         <div class="daily-controls">
           ${this.renderPower()}
           ${this.renderPrimary(i)}
@@ -2688,14 +2688,14 @@ class bi extends X {
       <div class="hood-panel">
         <span class="section-label">${h(this.hass, "field.fan_entity", "Fan")}</span>
         ${e ? _`
-          <div class="hood-level">${y(this.hass, e)}</div>
+          <div class="hood-level">${f(this.hass, e)}</div>
           <div class="stage-buttons">${o.map((l) => _`
             <button type="button" class="stage ${l === e.state ? "selected" : ""}" aria-pressed=${String(l === e.state)}
-              aria-label=${y(this.hass, { ...e, state: l })} ?disabled=${r}
+              aria-label=${f(this.hass, { ...e, state: l })} ?disabled=${r}
               @click=${() => {
       this.withBusy(e, () => Ve(this.hass, e, l));
     }}>
-              ${/^fanstage0*\d+$/i.test(l) ? Number(l.match(/\d+$/)[0]) : y(this.hass, { ...e, state: l })}
+              ${/^fanstage0*\d+$/i.test(l) ? Number(l.match(/\d+$/)[0]) : f(this.hass, { ...e, state: l })}
             </button>`)}</div>
         ` : t ? _`<hcd-entity-control .hass=${this.hass} .entity=${t} kind="fan" .label=${h(this.hass, "field.fan_entity", "Fan")}></hcd-entity-control>` : d}
       </div>
@@ -2751,18 +2751,18 @@ class xi extends X {
       ${s === "move" ? _`<div class="move-levels">
         ${["rear", "middle", "front"].map((a) => {
       const c = this.getState("power_move_" + a + "_" + l.side + "_entity");
-      return _`<div class="move-level"><span>${h(this.hass, "direct.move_" + a, a === "rear" ? "Rear" : a === "middle" ? "Middle" : "Front")}</span><strong>${y(this.hass, c)}</strong></div>`;
+      return _`<div class="move-level"><span>${h(this.hass, "direct.move_" + a, a === "rear" ? "Rear" : a === "middle" ? "Middle" : "Front")}</span><strong>${f(this.hass, c)}</strong></div>`;
     })}
       </div>` : d}
       ${l.zones.filter(e).map((a) => {
-      const c = (Ge) => this.getState("zone_" + a + "_" + Ge + "_entity"), u = c("state"), p = c("operation"), f = c("power"), b = c("remaining"), k = c("frying"), g = vi(u), A = wi(u, p), ye = u || f || p || b;
+      const c = (Ge) => this.getState("zone_" + a + "_" + Ge + "_entity"), u = c("state"), p = c("operation"), y = c("power"), b = c("remaining"), k = c("frying"), g = vi(u), A = wi(u, p), ye = u || y || p || b;
       return _`<button type="button" data-zone=${a} class="zone ${g ? "hot" : A ? "active" : ""}" @click=${() => ye && fe(this, ye.entity_id)}
-        aria-label=${"Zone " + a + ": " + y(this.hass, u || p)}>
-        <span class="zone-title">Zone ${a}<span>${y(this.hass, p || u)}</span></span>
-        <span class="zone-power">${y(this.hass, f)}</span>
+        aria-label=${"Zone " + a + ": " + f(this.hass, u || p)}>
+        <span class="zone-title">Zone ${a}<span>${f(this.hass, p || u)}</span></span>
+        <span class="zone-power">${f(this.hass, y)}</span>
         ${g ? _`<span class="hot-label">${h(this.hass, "direct.residual_heat", "Residual heat")}</span>` : d}
-        ${m(b) ? _`<span class="zone-meta">${h(this.hass, "field.remaining_time_entity", "Remaining time")}: ${y(this.hass, b)}</span>` : d}
-        ${m(k) && k.state !== "off" ? _`<span class="zone-meta">${h(this.hass, "direct.frying", "Frying sensor")}: ${y(this.hass, k)}</span>` : d}
+        ${m(b) ? _`<span class="zone-meta">${h(this.hass, "field.remaining_time_entity", "Remaining time")}: ${f(this.hass, b)}</span>` : d}
+        ${m(k) && k.state !== "off" ? _`<span class="zone-meta">${h(this.hass, "direct.frying", "Frying sensor")}: ${f(this.hass, k)}</span>` : d}
       </button>`;
     })}</div>`)}</div><p class="read-only-note">${h(this.hass, "direct.hob_readonly", "Zone values are read-only. Tap a zone for details.")}</p>`;
   }

@@ -81,4 +81,12 @@ describe("operation state and program phase", () => {
     expect(phaseText(hassFmt, e("none"), true)).toBe("");
     expect(phaseText(hassFmt, undefined, true)).toBe("");
   });
+
+  it("falls back to the operation state when the appliance has no phase", () => {
+    expect(phaseText(hassFmt, undefined, true, e("pause"))).toBe("pause");
+    expect(phaseText(hassFmt, e("none"), true, e("run"))).toBe("run");
+    expect(phaseText(hassFmt, e("finalrinse"), true, e("run"))).toBe("Klarspülen");
+    expect(phaseText(hassFmt, undefined, false, e("run"))).toBe("");
+    expect(phaseText(hassFmt, undefined, true, e("unavailable"))).toBe("");
+  });
 });

@@ -352,7 +352,7 @@ export abstract class BaseApplianceCard extends LitElement {
         elapsed: this.getState("elapsed_time_entity"), estimate: this.getState("estimated_time_entity"), startIn: this.getState("start_in_entity"),
         smartStart: isOn(this.getState("smart_start_entity")) || isOn(this.getState("auto_smart_start_entity")), now: Date.now() })
       : undefined;
-    const phase = phaseText(this.hass, this.getState("phase_entity"), active);
+    const phase = phaseText(this.hass, this.getState("phase_entity"), active, this.getState("operating_state_entity"));
     const message = messageNotice(this.hass, this.getState("messages_entity"));
     const warnings = this.definition.fields.filter(f => f.warning && f.key !== "messages_entity").map(field => ({field, entity:this.getState(field.key)}))
       .filter(({field,entity}) => entity && isWarningActive(entity,field.warningStates,field.warningBelow));

@@ -115,10 +115,14 @@ export function stateTone(state?: HassEntity): StateTone {
   }
 }
 
-/** Current program phase (dishwasher: main wash, drying; coffee machine: grinding, brewing), empty when there is none. */
-export function phaseText(hass: HomeAssistant, phase: HassEntity | undefined, running: boolean): string {
-  if (!running || !phase || !isAvailable(phase) || ["none", ""].includes(canonicalState(phase))) return "";
-  return displayState(hass, phase);
+/**
+ * Current program phase (dishwasher: main wash, drying; coffee machine: grinding, brewing).
+ * Appliances without a phase, or between two phases, show their operation state instead.
+ */
+export function phaseText(hass: HomeAssistant, phase: HassEntity | undefined, running: boolean, operation?: HassEntity): string {
+  if (!running) return "";
+  if (phase && isAvailable(phase) && !["none", ""].includes(canonicalState(phase))) return displayState(hass, phase);
+  return operation && isAvailable(operation) ? displayState(hass, operation) : "";
 }
 
 export type ApplianceMode = "off" | "idle" | "running" | "paused" | "unavailable";
