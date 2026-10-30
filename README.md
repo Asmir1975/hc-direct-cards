@@ -123,6 +123,11 @@ Other hob layouts are not verified. The global Join/mode entities do not allow a
 proven independent left/right mode display. There is no added zone power control
 and no remote-start function for the hob.
 
+## Good to know
+
+- **Start delay.** "Start in" moves in 15 minute steps and sits in the main view of the oven and the dishwasher. Not every oven program accepts a delay. On a Siemens HB774G1B1 programs such as air fry reject it, and the integration then answers "This program does not support a delayed start." Starting such a program ignores the delay and starts at once.
+- **Smart Start.** There are two switches: Auto Smart Start is the setting, Smart Start is the option for the selected program. While Auto Smart Start is off, the appliance locks Smart Start. With Auto Smart Start on, the appliance suggests a start delay itself from energy data of the Home Connect cloud. On a Siemens SX63HX52BE the suggestion disappeared when the cloud connection was switched off. Both switches are disabled by default in the integration.
+
 ## Compatibility and known limits
 
 - Works with Home Connect Direct 1.13.0 (`homeconnect_ws`). Appliances that the

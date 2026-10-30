@@ -124,6 +124,11 @@ Andere Kochfeldanordnungen sind nicht verifiziert. Die globalen Join-/Modus-
 Entitäten erlauben keine belegte unabhängige linke/rechte Modusdarstellung.
 Keine ergänzte Zonen-Leistungssteuerung und keine Kochfeld-Fernstartfunktion.
 
+## Gut zu wissen
+
+- **Startverzögerung.** „Starten in“ geht in 15-Minuten-Schritten und steht beim Ofen und beim Geschirrspüler in der Hauptansicht. Nicht jedes Ofenprogramm nimmt eine Verzögerung an. Beim Siemens HB774G1B1 lehnen Programme wie Heißluft-Fritteuse sie ab, die Integration antwortet dann „Dieses Programm unterstützt keine Startverzögerung.“ Wird so ein Programm gestartet, ignoriert das Gerät die Verzögerung und startet sofort.
+- **Smart Start.** Es gibt zwei Schalter: Automatischer Smart Start ist die Einstellung, Smart Start die Option für das gewählte Programm. Ist Automatischer Smart Start aus, sperrt das Gerät Smart Start. Ist er an, schlägt das Gerät selbst eine Startverzögerung vor, aus Energiedaten der Home-Connect-Cloud. Beim Siemens SX63HX52BE verschwand der Vorschlag, als die Cloud-Verbindung ausgeschaltet war. Beide Schalter sind in der Integration standardmäßig deaktiviert.
+
 ## Kompatibilität und bekannte Grenzen
 
 - Funktioniert mit Home Connect Direct 1.13.0 (`homeconnect_ws`). Was die Integration

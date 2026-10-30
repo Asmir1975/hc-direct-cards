@@ -13,7 +13,7 @@ import type { ProgramNameMap } from "../types/config";
 export interface ControlEventDetail { entity: HassEntity; action: "toggle" | "select" | "number" | "press" | "brightness" | "fan"; value?: string | number; }
 
 export class EntityControl extends LitElement {
-  static properties = { hass: { attribute: false }, entity: { attribute: false }, valueLabels: { attribute: false }, label: {}, kind: {}, disabled: { type: Boolean }, busy: { type: Boolean }, _pending: { state: true } };
+  static properties = { hass: { attribute: false }, entity: { attribute: false }, valueLabels: { attribute: false }, label: {}, kind: {}, disabled: { type: Boolean }, busy: { type: Boolean }, stepSeconds: { type: Number }, hint: {}, _pending: { state: true } };
   hass?: HomeAssistant;
   entity?: HassEntity;
   valueLabels: ProgramNameMap = {};
@@ -21,6 +21,8 @@ export class EntityControl extends LitElement {
   kind: ControlKind = "status";
   disabled = false;
   busy = false;
+  stepSeconds = 0;
+  hint = "";
   private _pending?: number;
   private _sendTimer?: ReturnType<typeof setTimeout>;
   private _clearTimer?: ReturnType<typeof setTimeout>;
@@ -46,6 +48,7 @@ export class EntityControl extends LitElement {
     .stepper button { width: 38px; padding: 0; border: 0; color: var(--primary-text-color); background: transparent; font: inherit; font-size: 20px; line-height: 1; cursor: pointer; transition: background 120ms ease; }
     .stepper button:hover:not(:disabled) { background: color-mix(in srgb, var(--hc-accent), transparent 82%); }
     .stepper-value { min-width: 78px; padding: 0 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; border-inline: 1px solid color-mix(in srgb, var(--divider-color), var(--primary-text-color) 8%); }
+    .hint { margin: -4px 0 8px; font-size: 11px; line-height: 1.4; color: var(--secondary-text-color); }
     .unavailable { opacity: .58; }
     button:disabled, select:disabled, input:disabled { cursor: not-allowed; opacity: .55; }
   `;
@@ -64,7 +67,7 @@ export class EntityControl extends LitElement {
 
   private tap(direction: 1 | -1) {
     if (!this.entity) return;
-    const spec = numberSpec(this.entity);
+    const spec = numberSpec(this.entity, this.stepSeconds);
     const base = this._pending ?? spec.value;
     if (base === undefined) return;
     const next = stepNumber(spec, base, direction);
@@ -107,7 +110,7 @@ export class EntityControl extends LitElement {
     }
     if (this.kind === "toggle") {
       const on = isOn(this.entity);
-      return html`<div class="line ${unavailable ? "unavailable" : ""}"><span class="label">${this.label}</span><button class="switch ${on ? "on" : ""}" type="button" role="switch" aria-checked=${String(on)} aria-label=${this.label} ?disabled=${blocked} @click=${() => this.emit("toggle")}></button></div>`;
+      return html`<div class="line ${unavailable ? "unavailable" : ""}"><span class="label">${this.label}</span><button class="switch ${on ? "on" : ""}" type="button" role="switch" aria-checked=${String(on)} aria-label=${this.label} ?disabled=${blocked} @click=${() => this.emit("toggle")}></button></div>${this.hint ? html`<div class="hint">${this.hint}</div>` : nothing}`;
     }
     if (this.kind === "select") {
       const options = this.entity.attributes.options || [];
@@ -115,7 +118,7 @@ export class EntityControl extends LitElement {
       return html`<div class="line ${unavailable ? "unavailable" : ""}"><label class="label" for="select">${this.label}</label><select id="select" ?disabled=${blocked} @change=${(ev: Event) => this.emit("select", (ev.target as HTMLSelectElement).value)}>${!isAvailable(this.entity) ? html`<option value="" disabled selected>${displayState(this.hass, this.entity)}</option>` : nothing}${choices.map((option) => html`<option .value=${option} ?selected=${option === this.entity?.state}>${customProgramName(option, this.valueLabels) || displayState(this.hass!, { ...this.entity!, state: option })}</option>`)}</select></div>`;
     }
     if (this.kind === "number") {
-      const spec = numberSpec(this.entity);
+      const spec = numberSpec(this.entity, this.stepSeconds);
       const shown = this._pending ?? spec.value;
       const text = shown === undefined ? displayState(this.hass, this.entity) : formatNumber(this.hass, spec, shown);
       const atMin = shown !== undefined && shown <= spec.min;

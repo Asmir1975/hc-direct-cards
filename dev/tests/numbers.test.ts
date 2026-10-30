@@ -23,6 +23,15 @@ describe("number controls", () => {
     expect(stepNumber(minutes, 0, -1)).toBe(0);
   });
 
+  it("moves a start delay in 15 minute steps and keeps the unit of the entity", () => {
+    const seconds = numberSpec(number("0", { unit_of_measurement: "s", min: 0, max: 86340, step: 1, device_class: "duration" }), 900);
+    expect(stepNumber(seconds, 0, 1)).toBe(900);
+    expect(stepNumber(seconds, 18060, 1)).toBe(18900);
+    const minutes = numberSpec(number("0", { unit_of_measurement: "min", min: 0, max: 1440, step: 1, device_class: "duration" }), 900);
+    expect(stepNumber(minutes, 0, 1)).toBe(15);
+    expect(stepNumber(minutes, 1440, 1)).toBe(1440);
+  });
+
   it("shows durations as minutes or hours and keeps the entity step for other values", () => {
     const seconds = numberSpec(number("3600", { unit_of_measurement: "s", min: 0, max: 86340, step: 1, device_class: "duration" }));
     expect(formatNumber(hass("en"), seconds, 3600)).toBe("1:00 h");

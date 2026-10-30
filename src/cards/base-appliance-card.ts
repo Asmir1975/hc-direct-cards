@@ -5,9 +5,9 @@ import type { ApplianceCardConfig } from "../types/config";
 import type { HomeAssistant, HassEntity } from "../types/home-assistant";
 import type { ApplianceDefinition, FieldDefinition, SectionId } from "../types/schema";
 import { configuredEntityIds, relevantStatesChanged, stateFor } from "../helpers/entity";
-import { deriveMode, displayState, isOn, isActiveMode, isAvailable, isWarningActive, progressValue, resolveAccentColor } from "../helpers/formatting";
+import { canonicalState, deriveMode, displayState, isOn, isActiveMode, isAvailable, isWarningActive, progressValue, resolveAccentColor } from "../helpers/formatting";
 import { discoverEntities, discoveryKey } from "../helpers/registry";
-import { showQuantityField } from "../helpers/controls";
+import { isReadonly, showQuantityField } from "../helpers/controls";
 import { setBrightness, setFanSpeed, pressEntity, selectOption, setNumber, toggleEntity } from "../helpers/services";
 import { fieldLabel, translate } from "../helpers/localize";
 import type { ControlEventDetail } from "../components/entity-control";
@@ -181,12 +181,24 @@ export abstract class BaseApplianceCard extends LitElement {
     const common = ["selected_program_entity"];
     const keys: Partial<Record<string, string[]>> = {
       coffee: [...common, "fill_quantity_select_entity", "fill_quantity_entity", "bean_amount_entity", "aroma_entity"],
-      oven: [...common, "target_temperature_entity", "duration_entity"],
-      dishwasher: common,
+      oven: [...common, "target_temperature_entity", "duration_entity", "start_in_entity"],
+      dishwasher: [...common, "start_in_entity"],
       hood: ["hood_level_entity", "fan_entity", "working_light_entity", "ambient_light_entity"],
       hob: [],
     };
     return keys[this.definition.kind] || [];
+  }
+
+  /** A start delay moves in 15 minute steps; the appliance accepts any value (own device logs). */
+  protected stepFor(field: FieldDefinition): number {
+    return field.key === "start_in_entity" ? 900 : 0;
+  }
+
+  /** Explains a locked Smart Start switch: the appliance locks it while Auto Smart Start is off. */
+  protected hintFor(field: FieldDefinition, entity: HassEntity): string {
+    if (field.key !== "smart_start_entity" || !isReadonly(entity)) return "";
+    const auto = this.getState("auto_smart_start_entity");
+    return auto && canonicalState(auto) === "off" ? translate(this.hass, "hint.smart_start_locked", "Smart Start is locked while Auto Smart Start is off.") : "";
   }
 
   protected renderPrimary(mode: ReturnType<typeof deriveMode>) {
@@ -197,6 +209,7 @@ export abstract class BaseApplianceCard extends LitElement {
     return html`<div class="primary-grid">${fields.map(({field,entity}) => html`
       <hcd-entity-control .hass=${this.hass} .entity=${entity} .label=${fieldLabel(this.hass,field)} .kind=${this.controlKind(field,entity!)}
         .valueLabels=${field.key === "selected_program_entity" ? this._config?.program_names || {} : {}}
+        .stepSeconds=${this.stepFor(field)} .hint=${this.hintFor(field, entity!)}
         .busy=${this._busyIds.has(entity!.entity_id)}></hcd-entity-control>
     `)}</div>`;
   }
@@ -255,8 +268,9 @@ export abstract class BaseApplianceCard extends LitElement {
     const hass = this.hass!;
     const chip = (label: string, value = "") => html`<span class="time-chip">${label}${value ? html` <b>${value}</b>` : nothing}</span>`;
     const at = (key: string, fallback: string, epoch: number) => translate(hass, key, fallback).replace("{t}", clockText(hass, epoch));
+    if (times.phase === "delayed") return html`<div class="times">${chip(translate(hass, "time.starts_in", "Starts in"), formatDuration(hass, times.startsIn!))}${times.endsAt !== undefined ? chip(at("time.done_at", "Done at {t}", times.endsAt)) : nothing}</div>`;
     if (times.phase === "finished") return html`<div class="times">${chip(at("time.done_at", "Done at {t}", times.finishedAt!))}</div>`;
-    if (times.phase === "idle") return html`<div class="times">${chip(translate(hass, "time.estimate", "Estimated duration"), formatDuration(hass, times.estimate!))}${chip(at("time.done_at_start", "Done at {t} if started", times.endsAt!))}</div>`;
+    if (times.phase === "idle") return html`<div class="times">${chip(translate(hass, "time.estimate", "Estimated duration"), formatDuration(hass, times.estimate!))}${chip(at("time.done_at_start", "Done at {t} if started", times.endsAt!))}${times.delayedEndsAt !== undefined ? chip(at("time.done_at_delay", "With the delay done at {t}", times.delayedEndsAt)) : nothing}</div>`;
     return html`<div class="times">
       ${times.elapsed !== undefined ? chip(translate(hass, "time.elapsed", "Running"), formatDuration(hass, times.elapsed)) : nothing}
       ${times.remaining !== undefined ? chip(translate(hass, "time.done_in", "Done in"), formatDuration(hass, times.remaining)) : nothing}
@@ -301,6 +315,7 @@ export abstract class BaseApplianceCard extends LitElement {
       <div class="section-grid ${section === "program" ? "program-grid" : ""}">${fields.map(({ field, entity }) => html`
         <div class="entity-slot"><hcd-entity-control .hass=${this.hass} .entity=${entity} .label=${fieldLabel(this.hass, field)} .kind=${this.controlKind(field, entity)}
           .valueLabels=${field.key === "selected_program_entity" || field.key === "active_program_entity" ? this._config?.program_names || {} : {}}
+          .stepSeconds=${this.stepFor(field)} .hint=${this.hintFor(field, entity)}
           .busy=${this._busyIds.has(entity.entity_id)}></hcd-entity-control>
         </div>
       `)}</div>

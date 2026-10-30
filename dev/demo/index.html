@@ -18,10 +18,14 @@ async function show(kind){
   if(id.endsWith("_einschalter"))states[id]={...state,state:"on"};
   if(id.endsWith("_betriebszustand")&&!id.includes("_zone_")){
    const mode=new URLSearchParams(location.search).get("state");
-   states[id]={...state,state:mode==="run"?"BSH.Common.EnumType.OperationState.Run":mode==="finished"?"BSH.Common.EnumType.OperationState.Finished":"ready",last_changed:new Date(Date.now()-25*60000).toISOString()};
+   states[id]={...state,state:mode==="run"?"BSH.Common.EnumType.OperationState.Run":mode==="delayed"?"BSH.Common.EnumType.OperationState.DelayedStart":mode==="finished"?"BSH.Common.EnumType.OperationState.Finished":"ready",last_changed:new Date(Date.now()-25*60000).toISOString()};
   }
   const msg=new URLSearchParams(location.search).get("msg");
   if(msg&&(id.endsWith("_meldung")||id.endsWith("_fehlermeldung")||id.endsWith("_geratemeldung")||id.endsWith("_filtermeldung")))states[id]={...state,state:msg};
+  if(new URLSearchParams(location.search).get("state")==="delayed"){
+   if(id.endsWith("_starten_in")&&id.startsWith("number."))states[id]={...state,state:"14940",attributes:{...state.attributes,unit_of_measurement:"s"}};
+   if(id.endsWith("_verbleibende_programmlaufzeit"))states[id]={...state,state:"1",attributes:{...state.attributes,unit_of_measurement:"h"}};
+  }
   if(new URLSearchParams(location.search).get("state")==="run"){
    if(id.endsWith("_verbleibende_programmlaufzeit"))states[id]={...state,state:"1.5",attributes:{...state.attributes,unit_of_measurement:"h"}};
    if(id.endsWith("_verstrichene_programmlaufzeit"))states[id]={...state,state:"37",attributes:{...state.attributes,unit_of_measurement:"min"}};

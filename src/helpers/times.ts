@@ -4,15 +4,19 @@ import { durationSeconds } from "./numbers";
 import { uiLanguage } from "./localize";
 
 export interface TimeSummary {
-  phase: "active" | "idle" | "finished";
+  phase: "active" | "delayed" | "idle" | "finished";
   /** Running time so far, seconds. */
   elapsed?: number;
   /** Time left, seconds. */
   remaining?: number;
   /** Total program time before the start, seconds. */
   estimate?: number;
+  /** Time until a delayed start begins, seconds. */
+  startsIn?: number;
   /** Expected end, epoch milliseconds. */
   endsAt?: number;
+  /** Expected end if the program is started with the set delay, epoch milliseconds. */
+  delayedEndsAt?: number;
   /** When the program finished, epoch milliseconds. */
   finishedAt?: number;
 }
@@ -39,9 +43,14 @@ export function summarizeTimes(input: TimeInputs): TimeSummary | undefined {
   const elapsed = durationSeconds(input.elapsed);
   const estimate = durationSeconds(input.estimate);
   const delay = durationSeconds(input.startIn) ?? 0;
+  // The estimate stands in while the appliance still reports no remaining time.
+  const left = remaining && remaining > 0 ? remaining : estimate && estimate > 60 ? estimate : undefined;
+  if (input.active && input.status && isAvailable(input.status) && canonicalState(input.status) === "delayedstart") {
+    // While the start is delayed "start in" counts down and the program time stays whole (own device logs).
+    if (!delay) return undefined;
+    return { phase: "delayed", startsIn: delay, remaining: left, endsAt: left === undefined ? undefined : input.now + (delay + left) * 1000 };
+  }
   if (input.active) {
-    // The estimate stands in while the appliance still reports no remaining time.
-    const left = remaining && remaining > 0 ? remaining : estimate && estimate > 60 ? estimate : undefined;
     if (left === undefined && !elapsed) return undefined;
     return { phase: "active", elapsed: elapsed || undefined, remaining: left, endsAt: left === undefined ? undefined : input.now + left * 1000 };
   }
@@ -49,7 +58,9 @@ export function summarizeTimes(input: TimeInputs): TimeSummary | undefined {
     const since = Date.parse(input.status.last_changed);
     return Number.isFinite(since) ? { phase: "finished", finishedAt: since } : undefined;
   }
-  if (estimate && estimate > 60) return { phase: "idle", estimate, endsAt: input.now + (delay + estimate) * 1000 };
+  if (estimate && estimate > 60) {
+    return { phase: "idle", estimate, endsAt: input.now + estimate * 1000, delayedEndsAt: delay > 0 ? input.now + (delay + estimate) * 1000 : undefined };
+  }
   return undefined;
 }
 

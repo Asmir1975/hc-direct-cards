@@ -20,7 +20,8 @@ function round(value: number): number {
   return Math.round(value * 1e6) / 1e6;
 }
 
-export function numberSpec(entity: HassEntity): NumberSpec {
+/** `minStepSeconds` makes time values move in coarser steps (for example 15 minutes for a start delay). */
+export function numberSpec(entity: HassEntity, minStepSeconds = 0): NumberSpec {
   const attributes = entity.attributes;
   const unit = String(attributes.unit_of_measurement ?? "").trim();
   const min = Number(attributes.min ?? 0);
@@ -30,7 +31,7 @@ export function numberSpec(entity: HassEntity): NumberSpec {
   const duration = unitSeconds > 0 && (attributes.device_class === "duration" || unit.toLowerCase() === "min" || unit.toLowerCase() === "s");
   const temperature = attributes.device_class === "temperature" || unit === "°C" || unit === "°F";
   // Time values move in whole minutes, temperatures in steps of 5; everything else follows the entity.
-  const step = duration ? Math.max(entityStep, 60 / unitSeconds) : temperature ? Math.max(entityStep, 5) : entityStep;
+  const step = duration ? Math.max(entityStep, Math.max(60, minStepSeconds) / unitSeconds) : temperature ? Math.max(entityStep, 5) : entityStep;
   return { value: numericState(entity), min, max, step, unit, duration, unitSeconds: duration ? unitSeconds : 0 };
 }
 

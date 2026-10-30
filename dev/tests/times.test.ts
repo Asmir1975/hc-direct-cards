@@ -29,8 +29,15 @@ describe("program times", () => {
 
   it("shows the expected total and end before the start, including a delayed start", () => {
     const summary = summarizeTimes({ active: false, estimate: sensor("2", "h"), startIn: sensor("30", "min"), now })!;
-    expect(summary).toMatchObject({ phase: "idle", estimate: 7200, endsAt: now + 9000_000 });
+    expect(summary).toMatchObject({ phase: "idle", estimate: 7200, endsAt: now + 7200_000, delayedEndsAt: now + 9000_000 });
+    expect(summarizeTimes({ active: false, estimate: sensor("2", "h"), now })!.delayedEndsAt).toBeUndefined();
     expect(summarizeTimes({ active: false, now })).toBeUndefined();
+  });
+
+  it("counts a delayed start down and adds it to the end time", () => {
+    const status = state("BSH.Common.EnumType.OperationState.DelayedStart", "2026-10-30T19:00:00+00:00");
+    const summary = summarizeTimes({ active: true, status, startIn: sensor("249", "min"), remaining: sensor("1", "h"), now })!;
+    expect(summary).toMatchObject({ phase: "delayed", startsIn: 14940, remaining: 3600, endsAt: now + (14940 + 3600) * 1000 });
   });
 
   it("shows when a finished program ended", () => {

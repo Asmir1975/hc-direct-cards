@@ -1,6 +1,8 @@
 # Changelog
 
 ## 1.2.0 – 2026-10-30
+- "Start in" moves in 15 minute steps and sits in the main view of oven and dishwasher. While a delayed start counts down, the time row shows "starts in" and the finish time including the delay. Before the start, the finish time with the set delay is shown separately.
+- Dishwasher: a note explains that Smart Start is locked while Auto Smart Start is off (the appliance does this).
 - Appliance messages (for example "insert food now", "preheating finished", "program finished", errors and reminders) appear at the top of the card with an icon and a tone: blue for hints, green for finished, orange for problems. They come from the integration's message sensor, so they also show when the appliance is operated at the device itself.
 - Oven and dishwasher: a time row shows running time, time left ("done in") and the finish time ("done at") while a program runs, the estimated duration and finish time before the start (including a set delayed start), and when a program finished. Times follow the Home Assistant 12/24 h setting. New optional entities: elapsed program time and estimated program time.
 
