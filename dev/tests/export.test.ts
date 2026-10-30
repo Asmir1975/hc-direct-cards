@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import { createDiscoveryReport, serializeCardConfig } from "../src/helpers/export";
-import { dishwasherDefinition } from "../src/definitions";
-import { VERSION } from "../src/version";
-import type { HomeAssistant } from "../src/types/home-assistant";
+import { createDiscoveryReport, serializeCardConfig } from "../../src/helpers/export";
+import { dishwasherDefinition } from "../../src/definitions";
+import { VERSION } from "../../src/version";
+import type { HomeAssistant } from "../../src/types/home-assistant";
 
 describe("configuration exports", () => {
   it("serializes a card configuration in a stable, paste-ready order", () => {

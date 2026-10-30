@@ -191,11 +191,10 @@ export abstract class BaseApplianceCard extends LitElement {
     const fields = this.definition.fields.filter(field => this.primaryFieldKeys().includes(field.key))
       .filter(field => showQuantityField(field.key, this.hass!, this._config!))
       .map(field => ({ field, entity: this.getState(field.key) })).filter(item => !!item.entity);
-    const disabled = this.isOffline() || mode === "running" || mode === "paused";
     return html`<div class="primary-grid">${fields.map(({field,entity}) => html`
       <hcd-entity-control .hass=${this.hass} .entity=${entity} .label=${fieldLabel(this.hass,field)} .kind=${this.controlKind(field,entity!)}
         .valueLabels=${field.key === "selected_program_entity" ? this._config?.program_names || {} : {}}
-        .busy=${this._busyIds.has(entity!.entity_id)} .disabled=${disabled && field.kind !== "status"}></hcd-entity-control>
+        .busy=${this._busyIds.has(entity!.entity_id)}></hcd-entity-control>
     `)}</div>`;
   }
 
@@ -211,7 +210,6 @@ export abstract class BaseApplianceCard extends LitElement {
   }
 
   protected async withBusy(entity: HassEntity, task: () => Promise<void>): Promise<void> {
-    if (this.isOffline()) { this._error=translate(this.hass,"direct.disconnected","Device disconnected"); return; }
     if (this._busyIds.has(entity.entity_id)) return;
     this._busyIds = new Set(this._busyIds).add(entity.entity_id);
     this._error = "";
@@ -250,12 +248,12 @@ export abstract class BaseApplianceCard extends LitElement {
     if (entity) void this.withBusy(entity, () => pressEntity(this.hass!, entity));
   }
 
-  protected renderPower(disabled: boolean) {
+  protected renderPower() {
     const power = this.getState("power_entity") || this.getState("power_state_entity");
     if (!power) return nothing;
     const domain = power.entity_id.split(".")[0];
     const kind = domain === "select" || domain === "input_select" ? "select" : domain === "light" ? "light" : domain === "switch" || domain === "input_boolean" ? "toggle" : "status";
-    return html`<div class="power-row"><hcd-entity-control .hass=${this.hass} .entity=${power} .label=${translate(this.hass, "power", "Power")} .kind=${kind} .busy=${this._busyIds.has(power.entity_id)} .disabled=${disabled}></hcd-entity-control></div>`;
+    return html`<div class="power-row"><hcd-entity-control .hass=${this.hass} .entity=${power} .label=${translate(this.hass, "power", "Power")} .kind=${kind} .busy=${this._busyIds.has(power.entity_id)}></hcd-entity-control></div>`;
   }
 
   protected renderActions(mode: ReturnType<typeof deriveMode>) {
@@ -275,7 +273,7 @@ export abstract class BaseApplianceCard extends LitElement {
     return actions.length ? html`<div class="primary-actions"><hcd-action-buttons .actions=${actions} .busyIds=${this._busyIds} .confirmingId=${this._confirmingId}></hcd-action-buttons></div>` : nothing;
   }
 
-  protected renderSection(section: SectionId, disabled: boolean) {
+  protected renderSection(section: SectionId) {
     if (!this._config) return nothing;
     if (section === "options" && this._config.show_options_section === false) return nothing;
     if (section === "status" && this._config.show_status_section === false) return nothing;
@@ -287,7 +285,7 @@ export abstract class BaseApplianceCard extends LitElement {
       <div class="section-grid ${section === "program" ? "program-grid" : ""}">${fields.map(({ field, entity }) => html`
         <div class="entity-slot"><hcd-entity-control .hass=${this.hass} .entity=${entity} .label=${fieldLabel(this.hass, field)} .kind=${this.controlKind(field, entity)}
           .valueLabels=${field.key === "selected_program_entity" || field.key === "active_program_entity" ? this._config?.program_names || {} : {}}
-          .busy=${this._busyIds.has(entity.entity_id)} .disabled=${disabled && field.kind !== "status" && !field.allowWhileActive}></hcd-entity-control>
+          .busy=${this._busyIds.has(entity.entity_id)}></hcd-entity-control>
         </div>
       `)}</div>
     </hcd-expandable-section>`;
@@ -320,7 +318,6 @@ export abstract class BaseApplianceCard extends LitElement {
     const warnings = this.definition.fields.filter(f => f.warning).map(field => ({field, entity:this.getState(field.key)}))
       .filter(({field,entity}) => entity && isWarningActive(entity,field.warningStates,field.warningBelow));
     const metrics = this.definition.fields.filter(f => f.prominent).map(f=>this.getState(f.key)).filter(isAvailable);
-    const disabled = this.isOffline() || this.definition.kind !== "hood" && (mode === "running" || mode === "paused");
     const accent = resolveAccentColor(this._config.accent_color,this.definition.accent);
     return html`<ha-card style=${styleMap({"--hc-accent":accent})} @hcd-control=${this.handleControl} @hcd-action=${this.handleAction}>
       <div class="shell">
@@ -336,16 +333,16 @@ export abstract class BaseApplianceCard extends LitElement {
         ${active && progress !== undefined && this._config.show_progress !== false ? html`<div class="progress-line"><span style=${`width:${progress}%`}></span></div>`:nothing}
         ${metrics.length ? html`<div class="key-metrics">${metrics.map(e=>html`<strong>${displayState(this.hass!,e)}</strong>`)}</div>`:nothing}
         <div class="daily-controls">
-          ${this.definition.kind !== "hood" ? this.renderPower(this.isOffline()):nothing}
+          ${this.definition.kind !== "hood" ? this.renderPower():nothing}
           ${this.renderPrimary(mode)}
           ${this.renderActions(mode)}
         </div>
         <footer><button class="details-button" type="button" @click=${this.toggleExpanded} aria-expanded=${String(this._expanded)}>${translate(this.hass,"direct.details","Details & settings")} <span>${this._expanded ? "−":"+"}</span></button></footer>
         ${this._expanded ? html`<div class="details-content">
-          ${this.renderSection("program",disabled)}
-          ${this.renderSection("options",disabled)}
-          ${this.renderSection("status",false)}
-          ${this.renderSection("settings",disabled)}
+          ${this.renderSection("program")}
+          ${this.renderSection("options")}
+          ${this.renderSection("status")}
+          ${this.renderSection("settings")}
         </div>`:nothing}
         ${this._error ? html`<div class="error" role="alert">${this._error}<button @click=${()=>{this._error="";}}>×</button></div>`:nothing}
       </div>

@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 
 const notices = "/*!\n" + readFileSync(new URL("./LICENSE", import.meta.url), "utf8")
   + "\nBundled Lit packages:\n"
-  + readFileSync(new URL("./licenses/LIT_BSD_3_CLAUSE.txt", import.meta.url), "utf8")
+  + readFileSync(new URL("./docs/legal/LIT_BSD_3_CLAUSE.txt", import.meta.url), "utf8")
   + "\n*/\n";
 
 export default defineConfig({

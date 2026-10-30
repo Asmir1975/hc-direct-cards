@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { canonicalState, cleanLabel, deriveMode, displayState, isActiveMode, isWarningActive, progressValue, resolveAccentColor } from "../src/helpers/formatting";
-import type { HassEntity, HomeAssistant } from "../src/types/home-assistant";
+import { canonicalState, cleanLabel, deriveMode, displayState, isActiveMode, isWarningActive, progressValue, resolveAccentColor } from "../../src/helpers/formatting";
+import type { HassEntity, HomeAssistant } from "../../src/types/home-assistant";
 
 function entity(state: string, entityId = "sensor.test", attributes: HassEntity["attributes"] = {}): HassEntity {
   return { entity_id: entityId, state, attributes, last_changed: "", last_updated: "" };

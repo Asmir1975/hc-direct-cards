@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { matchesApplianceEntity } from "../src/helpers/suggestion";
-import type { HassEntity, HomeAssistant } from "../src/types/home-assistant";
+import { matchesApplianceEntity } from "../../src/helpers/suggestion";
+import type { HassEntity, HomeAssistant } from "../../src/types/home-assistant";
 
 function state(entityId: string, friendlyName: string): HassEntity {
   return { entity_id: entityId, state: "ready", attributes: { friendly_name: friendlyName }, last_changed: "", last_updated: "" };

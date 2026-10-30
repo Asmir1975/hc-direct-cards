@@ -10,7 +10,6 @@
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-176b70" alt="MIT license"></a>
 <a href="https://github.com/Asmir1975/homeconnect_direct"><img src="https://img.shields.io/badge/Home_Connect_Direct-1.13.0-176b70" alt="For Home Connect Direct 1.13.0"></a>
 <img src="https://img.shields.io/badge/cards-5-b9794a" alt="5 cards">
-<img src="https://img.shields.io/badge/status-in_development-b9794a" alt="In development">
 <img src="https://img.shields.io/badge/TypeScript-Lit-3178c6" alt="TypeScript and Lit">
 </p>
 
@@ -19,12 +18,12 @@ machine card to Home Assistant. Made by
 [Asmir1975](https://github.com/Asmir1975) for
 [Home Connect Direct](https://github.com/Asmir1975/homeconnect_direct).
 
+The cards are an optional companion to the integration: they show what the
+integration provides and send its own values, nothing more.
+
 Pick the appliance in the visual editor and the card assigns the matching
 entities automatically. The main view shows everyday controls; further values
 and settings fold out below.
-
-> Development version **0.3.0-dev.1** for local testing. Not released yet.
-> The design of the detail view is still being evaluated.
 
 ## The five cards
 
@@ -59,7 +58,7 @@ Connect cloud integration has a different entity structure.
 2. Under **Settings → Dashboards → Resources** add it as a **JavaScript module**:
 
    ```text
-   /local/hc-direct-cards/home-connect-direct-cards.js?v=0.3.0-dev.1
+   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.0.0
    ```
 
 3. Fully reload the browser.
@@ -75,11 +74,18 @@ Load only one version of this card package at a time. Existing `hc-direct`
 card types stay valid. For existing cards, use the recommended size on the
 **Layout** tab or choose 12 columns.
 
-### HACS (after publication)
+### HACS
 
-The repository contains `hacs.json` and the built JavaScript in `dist`. After
-publication it can be added as a custom **Dashboard** repository. An actual HACS
-install or update test is still open. [Installation details](docs/INSTALLATION.md).
+Add `https://github.com/Asmir1975/hc-direct-cards` under **HACS → ⋮ → Custom
+repositories** with type **Dashboard**, then download **HC Direct Cards** and
+reload the browser. The repository contains `hacs.json` and the built JavaScript
+in `dist`.
+
+### Switching or removing
+
+Change the existing resource entry instead of adding a second one, then reload
+completely. To go back, use the previous JavaScript file and its resource URL.
+The integration and its configuration are not changed by this package.
 
 ## Automatic device detection
 
@@ -110,42 +116,27 @@ Other hob layouts are not verified. The global Join/mode entities do not allow a
 proven independent left/right mode display. There is no added zone power control
 and no remote-start function for the hob.
 
-## Test status and limits
+## Compatibility and known limits
 
-- Offline tests use saved data from five own appliances plus simulated states.
-  They do not replace a test on real appliances.
-- Read-only and unavailable entities, and a known disconnect, stay write-locked.
-  Running alone does not lock the main power switch.
-- A power-switch lock observed on a dev instance for the dishwasher could not be
-  reproduced offline; the actual cause is still open.
-- No complete appliance acceptance test and no universal model compatibility.
+- Works with Home Connect Direct 1.13.0 (`homeconnect_ws`). Appliances that the
+  integration does not expose are not available in the cards.
+- The hob layout is confirmed for the Siemens EX851LYV5E only.
 
 ## Development
 
-Use Node.js 24:
-
-```sh
-npm ci
-npm test
-npm run build
-npm run demo
-```
-
-`npm run demo` serves an offline demo page at
-`http://localhost:5173/demo/`. It renders each card with saved sample entities,
-logs clicks locally and never talks to any appliance or Home Assistant. Add
-`?lang=en` or use the language selector to check the English texts.
-
-See [Architecture](ARCHITECTURE.md), [Contributing](CONTRIBUTING.md) and
-[Changelog](CHANGELOG.md).
+Node.js 24 is required. `npm ci`, `npm test`, `npm run build`; an offline demo runs
+with `npm run demo` at `http://localhost:5173/dev/demo/` (add `?lang=en` for the
+English texts). It uses saved sample entities and never contacts Home Assistant or
+appliances. See [Architecture](docs/ARCHITECTURE.md),
+[Contributing](.github/CONTRIBUTING.md) and [Changelog](CHANGELOG.md).
 
 ## Credits and license
 
-**Asmir1975** · [MIT license](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md)
+**Asmir1975** · [MIT license](LICENSE) · [Third-party notices](docs/legal/THIRD_PARTY_NOTICES.md)
 
 Parts of the card code derive from
 [Home Connect Card Pack](https://github.com/leMax6608/home-connect-card-pack)
 by leMax6608 (MIT). Thank you for the foundation. The original notice is kept in
-[licenses/HC_CARD_PACK_MIT.txt](licenses/HC_CARD_PACK_MIT.txt). Home Connect,
+[docs/legal/HC_CARD_PACK_MIT.txt](docs/legal/HC_CARD_PACK_MIT.txt). Home Connect,
 Bosch, Siemens and Home Assistant are trademarks of their respective owners; see
-[TRADEMARKS.md](TRADEMARKS.md).
+[docs/legal/TRADEMARKS.md](docs/legal/TRADEMARKS.md).

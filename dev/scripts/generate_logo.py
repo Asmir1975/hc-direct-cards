@@ -2,7 +2,7 @@
 from pathlib import Path
 import os
 from PIL import Image, ImageDraw, ImageFont
-OUT=Path(__file__).resolve().parents[1]/"assets"
+OUT=Path(__file__).resolve().parents[2]/"assets"
 S=3
 copper="#ba8056"
 # Wordmark colors per background; the icon is identical on both.

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { discoverEntities } from "../src/helpers/registry";
-import { coffeeDefinition, dishwasherDefinition, ovenDefinition } from "../src/definitions";
-import type { HomeAssistant } from "../src/types/home-assistant";
+import { discoverEntities } from "../../src/helpers/registry";
+import { coffeeDefinition, dishwasherDefinition, ovenDefinition } from "../../src/definitions";
+import type { HomeAssistant } from "../../src/types/home-assistant";
 
 describe("registry-first discovery", () => {
   it("assigns an oven power-state anchor to Status and finds its remaining device roles", async () => {

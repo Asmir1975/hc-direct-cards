@@ -1,28 +1,28 @@
-name: Fehler melden
-description: Problem mit einer der fünf Karten
+name: Bug report
+description: Problem with one of the five cards
 body:
   - type: input
     id: versions
     attributes:
-      label: Karten-, HA- und Integrationsversion
+      label: Card, Home Assistant and integration version
     validations:
       required: true
   - type: input
     id: appliance
     attributes:
-      label: Karte und Gerätemodell
+      label: Card type and appliance model
     validations:
       required: true
   - type: textarea
     id: behavior
     attributes:
-      label: Beobachtung und erwartetes Verhalten
-      description: Schritte, Gerätebeobachtung und Simulationen unterscheiden.
+      label: Observed and expected behavior
+      description: Steps to reproduce. Separate real appliance observations from simulations.
     validations:
       required: true
   - type: textarea
     id: config
     attributes:
-      label: Relevante Konfiguration oder Fehlermeldung
-      description: Keine Zugangsdaten oder privaten Geräteschlüssel angeben.
+      label: Relevant configuration or error message
+      description: Do not include credentials or private appliance keys.
       render: yaml

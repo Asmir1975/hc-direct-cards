@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { pressEntity, setNumber, toggleEntity } from "../src/helpers/services";
-import type { HassEntity, HomeAssistant } from "../src/types/home-assistant";
+import { pressEntity, setNumber, toggleEntity } from "../../src/helpers/services";
+import type { HassEntity, HomeAssistant } from "../../src/types/home-assistant";
 
 function entity(entityId: string, state: string, options?: string[]): HassEntity {
   return { entity_id: entityId, state, attributes: { options }, last_changed: "", last_updated: "" };

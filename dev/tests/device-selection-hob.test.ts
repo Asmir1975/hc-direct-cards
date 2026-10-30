@@ -1,10 +1,10 @@
 import { describe,it,expect,vi } from "vitest";
 import fixture from "./fixtures/own-devices-1130.json";
-import { discoverEntities,discoveryKey } from "../src/helpers/registry";
-import { hobDefinition,hoodDefinition,coffeeDefinition,ovenDefinition,dishwasherDefinition } from "../src/definitions";
-import { selectOption } from "../src/helpers/services";
-import { serializeCardConfig } from "../src/helpers/export";
-import type { HomeAssistant,HassEntity } from "../src/types/home-assistant";
+import { discoverEntities,discoveryKey } from "../../src/helpers/registry";
+import { hobDefinition,hoodDefinition,coffeeDefinition,ovenDefinition,dishwasherDefinition } from "../../src/definitions";
+import { selectOption } from "../../src/helpers/services";
+import { serializeCardConfig } from "../../src/helpers/export";
+import type { HomeAssistant,HassEntity } from "../../src/types/home-assistant";
 const definitions={hob:hobDefinition,hood:hoodDefinition,coffee:coffeeDefinition,oven:ovenDefinition,dishwasher:dishwasherDefinition};
 function allHass() {
  const registry=structuredClone(Object.values(fixture.models).flatMap(m=>m.registry));

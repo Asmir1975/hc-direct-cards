@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { customProgramName, displayProgramName } from "../src/helpers/programs";
-import type { HassEntity, HomeAssistant } from "../src/types/home-assistant";
+import { customProgramName, displayProgramName } from "../../src/helpers/programs";
+import type { HassEntity, HomeAssistant } from "../../src/types/home-assistant";
 
 const hass = { states: {} } as unknown as HomeAssistant;
 const program = {

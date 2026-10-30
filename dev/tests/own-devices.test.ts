@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from "vitest";
 import fixture from "./fixtures/own-devices-1130.json";
-import { discoverEntities } from "../src/helpers/registry";
-import { hoodDefinition, hobDefinition, coffeeDefinition, ovenDefinition, dishwasherDefinition } from "../src/definitions";
-import { isControlAvailable, showQuantityField } from "../src/helpers/controls";
-import { setBrightness, setFanSpeed, selectOption } from "../src/helpers/services";
-import { displayState, isWarningActive } from "../src/helpers/formatting";
-import { zoneIsHot, zoneIsActive } from "../src/helpers/hob";
-import type { HomeAssistant, HassEntity } from "../src/types/home-assistant";
+import { discoverEntities } from "../../src/helpers/registry";
+import { hoodDefinition, hobDefinition, coffeeDefinition, ovenDefinition, dishwasherDefinition } from "../../src/definitions";
+import { isControlAvailable, showQuantityField } from "../../src/helpers/controls";
+import { setBrightness, setFanSpeed, selectOption } from "../../src/helpers/services";
+import { displayState, isWarningActive } from "../../src/helpers/formatting";
+import { zoneIsHot, zoneIsActive } from "../../src/helpers/hob";
+import type { HomeAssistant, HassEntity } from "../../src/types/home-assistant";
 
 const definitions = { hood:hoodDefinition, hob:hobDefinition, coffee:coffeeDefinition, oven:ovenDefinition, dishwasher:dishwasherDefinition };
 function ownHass(kind: keyof typeof fixture.models) {

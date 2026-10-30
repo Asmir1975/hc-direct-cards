@@ -1,5 +1,5 @@
-## Änderung
-Welches konkrete Problem wird gelöst?
+## Change
+Which concrete problem does this solve?
 
-## Prüfung
-Tests, Build und gegebenenfalls Gerätebeleg. Simulationen ausdrücklich benennen.
+## Verification
+Tests, build and, if applicable, evidence from a real appliance. Name simulations explicitly.

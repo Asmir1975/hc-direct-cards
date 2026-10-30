@@ -24,8 +24,8 @@ export class HobCard extends BaseApplianceCard {
     const modeEntity=modes && {...modes,attributes:{...modes.attributes,options:modeOptions}};
     return html`
     <div class="section-grid">
-      ${bridge ? html`<hcd-entity-control .hass=${this.hass} .entity=${bridge} kind="select" .label=${translate(this.hass,"field.bridge_mode_entity","Join / split zones")} .disabled=${this.isOffline()} .busy=${this._busyIds.has(bridge.entity_id)}></hcd-entity-control>`:nothing}
-      ${modeEntity && modeOptions.length ? html`<hcd-entity-control .hass=${this.hass} .entity=${modeEntity} kind="select" .label=${translate(this.hass,"field.hob_mode_entity","Power mode")} .disabled=${this.isOffline()} .busy=${this._busyIds.has(modeEntity.entity_id)}></hcd-entity-control>`:nothing}
+      ${bridge ? html`<hcd-entity-control .hass=${this.hass} .entity=${bridge} kind="select" .label=${translate(this.hass,"field.bridge_mode_entity","Join / split zones")} .busy=${this._busyIds.has(bridge.entity_id)}></hcd-entity-control>`:nothing}
+      ${modeEntity && modeOptions.length ? html`<hcd-entity-control .hass=${this.hass} .entity=${modeEntity} kind="select" .label=${translate(this.hass,"field.hob_mode_entity","Power mode")} .busy=${this._busyIds.has(modeEntity.entity_id)}></hcd-entity-control>`:nothing}
     </div>
     ${!bridge ? html`<p class="read-only-note">${translate(this.hass,"direct.join_missing","No Join entity assigned. Enable or assign the zone bridge mode entity in the editor.")}</p>`:nothing}
     <div class="zones">${HOB_COLUMNS.map(column=>html`

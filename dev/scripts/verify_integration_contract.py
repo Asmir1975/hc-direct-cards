@@ -1,8 +1,8 @@
 """Check adapter key references against exact integration source; no appliance access."""
 import ast,json,re,sys
 from pathlib import Path
-root=Path(__file__).resolve().parents[1]
-if len(sys.argv) not in (2,3): raise SystemExit("Usage: python3 scripts/verify_integration_contract.py /path/to/homeconnect_direct [audit.json]")
+root=Path(__file__).resolve().parents[2]
+if len(sys.argv) not in (2,3): raise SystemExit("Usage: python3 dev/scripts/verify_integration_contract.py /path/to/homeconnect_direct [audit.json]")
 src=Path(sys.argv[1])/"custom_components/homeconnect_ws"
 patterns=[]
 for p in [*(src/"entity_descriptions").glob("*.py"),src/"binary_sensor.py"]:

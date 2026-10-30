@@ -1,10 +1,10 @@
 import { describe, it, expect, vi } from "vitest";
-import { discoverEntities, type RegistryEntry } from "../src/helpers/registry";
-import { coffeeDefinition, ovenDefinition, dishwasherDefinition } from "../src/definitions";
-import { showQuantityField } from "../src/helpers/controls";
-import { pressEntity, selectOption, setNumber, toggleEntity } from "../src/helpers/services";
-import { deriveMode, isWarningActive, displayState } from "../src/helpers/formatting";
-import type { HassEntity, HomeAssistant } from "../src/types/home-assistant";
+import { discoverEntities, type RegistryEntry } from "../../src/helpers/registry";
+import { coffeeDefinition, ovenDefinition, dishwasherDefinition } from "../../src/definitions";
+import { showQuantityField } from "../../src/helpers/controls";
+import { pressEntity, selectOption, setNumber, toggleEntity } from "../../src/helpers/services";
+import { deriveMode, isWarningActive, displayState } from "../../src/helpers/formatting";
+import type { HassEntity, HomeAssistant } from "../../src/types/home-assistant";
 
 const state = (entity_id: string, value = "on", attributes = {}): HassEntity =>
   ({ entity_id, state: value, attributes, last_changed: "", last_updated: "" });

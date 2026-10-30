@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { fieldLabel, translate, uiLanguage } from "../src/helpers/localize";
-import { cleanLabel, displayState } from "../src/helpers/formatting";
-import { coffeeDefinition, dishwasherDefinition, hobDefinition, hoodDefinition, ovenDefinition } from "../src/definitions";
-import type { HassEntity, HomeAssistant } from "../src/types/home-assistant";
+import { fieldLabel, translate, uiLanguage } from "../../src/helpers/localize";
+import { cleanLabel, displayState } from "../../src/helpers/formatting";
+import { coffeeDefinition, dishwasherDefinition, hobDefinition, hoodDefinition, ovenDefinition } from "../../src/definitions";
+import type { HassEntity, HomeAssistant } from "../../src/types/home-assistant";
 
 function entity(state: string, entityId = "sensor.test", attributes: HassEntity["attributes"] = {}): HassEntity {
   return { entity_id: entityId, state, attributes, last_changed: "", last_updated: "" };

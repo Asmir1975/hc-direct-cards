@@ -6,7 +6,7 @@ body{margin:20px}h1{font-size:21px}p{font-size:12px;max-width:460px;line-height:
 </style><h1>HC Direct Cards · Offline demo</h1><p>Lokaler Gestaltungsvorschlag. Eigene gespeicherte Entitäten; Bereitschaft ist zur Ansicht simuliert. Keine HA-/Geräteverbindung. Klicks werden nur lokal protokolliert.</p>
 <div class="toolbar"><select aria-label="Gerät"><option value="coffee">CoffeeMaker</option><option value="oven">Ofen</option><option value="dishwasher">Geschirrspüler</option><option value="hood">Haube</option><option value="hob">Kochfeld</option></select><select id="lang" aria-label="Sprache / Language"><option value="de">Deutsch</option><option value="en">English</option></select><button id="width">Breite 320 / 460</button><button id="settings">Einstellungen aufklappen</button></div><button id="check">Layoutprüfung: 5 Geräte</button><pre id="checks">Layoutprüfung noch nicht gestartet.</pre><p id="scope"></p><div id="card"></div><pre id="events">Noch keine Aktion.</pre>
 <script type="module">
-import "../dist/home-connect-direct-cards.js";
+import "../../dist/home-connect-direct-cards.js";
 customElements.define("ha-icon",class extends HTMLElement{});
 const registered=window.customCards.filter(c=>c.type.startsWith("hc-direct-"));
 document.querySelector("#scope").textContent=registered.length+" Kartentypen: "+registered.map(c=>c.type).join(", ");

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { coffeeDefinition, dishwasherDefinition } from "../src/definitions";
+import { coffeeDefinition, dishwasherDefinition } from "../../src/definitions";
 
 const keys = (definition: typeof coffeeDefinition) => definition.fields.map((field) => field.key);
 

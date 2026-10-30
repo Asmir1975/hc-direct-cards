@@ -1,6 +1,6 @@
 import { describe,it,expect } from "vitest";
-import { HOB_COLUMNS,hobPairMode } from "../src/helpers/hob";
-import type { HassEntity } from "../src/types/home-assistant";
+import { HOB_COLUMNS,hobPairMode } from "../../src/helpers/hob";
+import type { HassEntity } from "../../src/types/home-assistant";
 const state=(value:string)=>({entity_id:"select.mode",state:value,attributes:{}} as HassEntity);
 describe("EX851LYV5E physical layout and pair display",()=>{
  it("places back left/right above front left/right",()=>{
