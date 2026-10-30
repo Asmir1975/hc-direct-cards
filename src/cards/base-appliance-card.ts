@@ -333,7 +333,7 @@ export abstract class BaseApplianceCard extends LitElement {
         ${active && progress !== undefined && this._config.show_progress !== false ? html`<div class="progress-line"><span style=${`width:${progress}%`}></span></div>`:nothing}
         ${metrics.length ? html`<div class="key-metrics">${metrics.map(e=>html`<strong>${displayState(this.hass!,e)}</strong>`)}</div>`:nothing}
         <div class="daily-controls">
-          ${this.definition.kind !== "hood" ? this.renderPower():nothing}
+          ${this.renderPower()}
           ${this.renderPrimary(mode)}
           ${this.renderActions(mode)}
         </div>

@@ -2465,7 +2465,7 @@ class G extends $ {
         ${s && a !== void 0 && this._config.show_progress !== !1 ? _`<div class="progress-line"><span style=${`width:${a}%`}></span></div>` : h}
         ${u.length ? _`<div class="key-metrics">${u.map((m) => _`<strong>${f(this.hass, m)}</strong>`)}</div>` : h}
         <div class="daily-controls">
-          ${this.definition.kind !== "hood" ? this.renderPower() : h}
+          ${this.renderPower()}
           ${this.renderPrimary(i)}
           ${this.renderActions(i)}
         </div>
