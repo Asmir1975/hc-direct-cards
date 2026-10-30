@@ -16,6 +16,7 @@ import { fireMoreInfo } from "../helpers/actions";
 import { displayProgramName } from "../helpers/programs";
 import { formatDuration } from "../helpers/numbers";
 import { clockText, summarizeTimes, type TimeSummary } from "../helpers/times";
+import { messageNotice } from "../helpers/notices";
 import "../components/entity-control";
 import "../components/expandable-section";
 import "../components/action-buttons";
@@ -334,7 +335,8 @@ export abstract class BaseApplianceCard extends LitElement {
       ? summarizeTimes({ active, status: this.getState("operating_state_entity"), remaining: this.getState("remaining_time_entity"),
         elapsed: this.getState("elapsed_time_entity"), estimate: this.getState("estimated_time_entity"), startIn: this.getState("start_in_entity"), now: Date.now() })
       : undefined;
-    const warnings = this.definition.fields.filter(f => f.warning).map(field => ({field, entity:this.getState(field.key)}))
+    const message = messageNotice(this.hass, this.getState("messages_entity"));
+    const warnings = this.definition.fields.filter(f => f.warning && f.key !== "messages_entity").map(field => ({field, entity:this.getState(field.key)}))
       .filter(({field,entity}) => entity && isWarningActive(entity,field.warningStates,field.warningBelow));
     const metrics = this.definition.fields.filter(f => f.prominent).map(f=>this.getState(f.key)).filter(isAvailable);
     const accent = resolveAccentColor(this._config.accent_color,this.definition.accent);
@@ -347,6 +349,7 @@ export abstract class BaseApplianceCard extends LitElement {
           </button>
           <span class="state-label ${mode}">${this.getState("connection_entity") ? html`<span class="connection-dot ${this.isOffline() ? "offline":""}" title=${translate(this.hass,this.isOffline()?"direct.disconnected":"direct.connected",this.isOffline()?"Device disconnected":"Connected")}></span>`:nothing}${headerStatus ? displayState(this.hass,headerStatus) : translate(this.hass,"ready","Ready")}</span>
         </header>
+        ${message ? html`<div class="warning-strip"><span class="notice ${message.tone}" role="status"><ha-icon .icon=${message.icon}></ha-icon>${message.text}</span></div>`:nothing}
         ${warnings.length ? html`<div class="warning-strip">${warnings.map(({field,entity})=>html`<span class="notice">${fieldLabel(this.hass,field)}${entity?.entity_id.startsWith("binary_sensor.") ? "" : ": "+displayState(this.hass!,entity)}</span>`)}</div>`:nothing}
         ${active && isAvailable(program) ? html`<div class="now-running"><span>${displayProgramName(this.hass,program!,this._config.program_names)}</span>${isAvailable(remaining) && !times ? html`<strong>${displayState(this.hass,remaining)}</strong>`:nothing}</div>`:nothing}
         ${active && progress !== undefined && this._config.show_progress !== false ? html`<div class="progress-line"><span style=${`width:${progress}%`}></span></div>`:nothing}

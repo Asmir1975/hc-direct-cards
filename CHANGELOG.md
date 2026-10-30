@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Appliance messages (for example "insert food now", "preheating finished", "program finished", errors and reminders) appear at the top of the card with an icon and a tone: blue for hints, green for finished, orange for problems. They come from the integration's message sensor, so they also show when the appliance is operated at the device itself.
 - Oven and dishwasher: a time row shows running time, time left ("done in") and the finish time ("done at") while a program runs, the estimated duration and finish time before the start (including a set delayed start), and when a program finished. Times follow the Home Assistant 12/24 h setting. New optional entities: elapsed program time and estimated program time.
 
 ## 1.1.0 – 2026-10-30

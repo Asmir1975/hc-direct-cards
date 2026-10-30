@@ -24,6 +24,9 @@ export const commonCardStyles = css`
   .time-chip b { color:var(--primary-text-color); font-weight:650; }
   .key-metrics { margin:0 20px 14px; display:flex; gap:12px; font-size:18px; }
   .warning-strip { padding:0 20px 12px; display:grid; gap:6px; }
+  .notice.info { border-left-color:var(--info-color,#3d8bd9); background:color-mix(in srgb,var(--info-color,#3d8bd9),transparent 92%); }
+  .notice.success { border-left-color:var(--success-color,#43a047); background:color-mix(in srgb,var(--success-color,#43a047),transparent 92%); }
+  .notice ha-icon { --mdc-icon-size:16px; margin-right:6px; vertical-align:-3px; }
   .notice { font-size:12px; padding:8px 10px; border-left:3px solid var(--warning-color,#d18420); background:color-mix(in srgb,var(--warning-color,#d18420),transparent 94%); overflow-wrap:anywhere; }
   footer { border-top:1px solid var(--divider-color); }
   .details-button { width:100%; min-height:44px; padding:10px 20px; border:0; background:transparent; color:var(--secondary-text-color); display:flex; justify-content:space-between; align-items:center; font:inherit; font-size:12px; cursor:pointer; }
