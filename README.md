@@ -135,11 +135,11 @@ appliances. See [Architecture](docs/ARCHITECTURE.md),
 
 ## Credits and license
 
-**Asmir1975** · [MIT license](LICENSE) · [Third-party notices](docs/legal/THIRD_PARTY_NOTICES.md)
-
-Parts of the card code derive from
-[Home Connect Card Pack](https://github.com/leMax6608/home-connect-card-pack)
-by leMax6608 (MIT). Thank you for the foundation. The original notice is kept in
-[docs/legal/HC_CARD_PACK_MIT.txt](docs/legal/HC_CARD_PACK_MIT.txt). Home Connect,
-Bosch, Siemens and Home Assistant are trademarks of their respective owners; see
-[docs/legal/TRADEMARKS.md](docs/legal/TRADEMARKS.md).
+- **Author:** [Asmir1975](https://github.com/Asmir1975)
+- **License:** [MIT](LICENSE), see also the [third-party notices](docs/legal/THIRD_PARTY_NOTICES.md)
+- **Foundation:** parts of the card code derive from the
+  [Home Connect Card Pack](https://github.com/leMax6608/home-connect-card-pack)
+  by leMax6608 (MIT). Thank you. The original notice is kept in the
+  [Card Pack license](docs/legal/HC_CARD_PACK_MIT.txt).
+- **Trademarks:** Home Connect, Bosch, Siemens and Home Assistant are trademarks of
+  their respective owners, see [trademarks](docs/legal/TRADEMARKS.md).

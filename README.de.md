@@ -136,11 +136,11 @@ noch Geräte. Siehe [Architektur](docs/ARCHITECTURE.md),
 
 ## Autor, Dank und Lizenz
 
-**Asmir1975** · [MIT-Lizenz](LICENSE) · [Weitere Lizenzhinweise](docs/legal/THIRD_PARTY_NOTICES.md)
-
-Teile des Kartencodes gehen auf das
-[Home Connect Card Pack](https://github.com/leMax6608/home-connect-card-pack)
-von leMax6608 (MIT) zurück. Danke für die Grundlage. Der Originalvermerk liegt in
-[docs/legal/HC_CARD_PACK_MIT.txt](docs/legal/HC_CARD_PACK_MIT.txt). Home Connect,
-Bosch, Siemens und Home Assistant sind Marken ihrer jeweiligen Inhaber, siehe
-[docs/legal/TRADEMARKS.md](docs/legal/TRADEMARKS.md).
+- **Autor:** [Asmir1975](https://github.com/Asmir1975)
+- **Lizenz:** [MIT](LICENSE), dazu die [weiteren Lizenzhinweise](docs/legal/THIRD_PARTY_NOTICES.md)
+- **Grundlage:** Teile des Kartencodes gehen auf das
+  [Home Connect Card Pack](https://github.com/leMax6608/home-connect-card-pack)
+  von leMax6608 (MIT) zurück. Danke dafür. Der Originalvermerk liegt in der
+  [Card-Pack-Lizenz](docs/legal/HC_CARD_PACK_MIT.txt).
+- **Marken:** Home Connect, Bosch, Siemens und Home Assistant sind Marken ihrer
+  jeweiligen Inhaber, siehe [Markenhinweis](docs/legal/TRADEMARKS.md).
