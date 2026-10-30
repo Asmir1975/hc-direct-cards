@@ -8,6 +8,7 @@
 <p align="center"><a href="README.md">English</a> · <a href="README.de.md">Deutsch</a></p>
 <p align="center">
 <a href="https://github.com/Asmir1975/hc-direct-cards/releases/latest"><img src="https://img.shields.io/github/v/release/Asmir1975/hc-direct-cards?color=176b70&label=version" alt="Aktuelle Version"></a>
+<a href="https://github.com/Asmir1975/hc-direct-cards/releases"><img src="https://img.shields.io/github/downloads/Asmir1975/hc-direct-cards/total?color=b9794a&label=Downloads" alt="Downloads"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/Lizenz-MIT-176b70" alt="MIT-Lizenz"></a>
 <img src="https://img.shields.io/badge/Karten-5-b9794a" alt="5 Karten">
 <img src="https://img.shields.io/badge/TypeScript-Lit-3178c6" alt="TypeScript und Lit">
@@ -27,6 +28,10 @@ und Einstellungen lassen sich aufklappen.
 
 Zahlenwerte wie Solltemperatur, Dauer und verzögerter Start werden mit den Tasten − und +
 eingestellt; Zeiten gehen in Minuten, Temperaturen in 5er-Schritten.
+
+Ofen und Geschirrspüler zeigen Laufzeit, Restzeit und Fertig-Zeit. Meldungen des Geräts
+(zum Beispiel „Speise jetzt einschieben“ oder „Programm beendet“) erscheinen oben in der
+Karte, auch wenn das Gerät direkt am Gerät bedient wird.
 
 ## Die fünf Karten
 
@@ -61,7 +66,7 @@ mit verfügbaren Geräten. Der geprüfte Entity-Vertrag heißt `homeconnect_ws`.
 2. Unter **Einstellungen → Dashboards → Ressourcen** als **JavaScript-Modul** eintragen:
 
    ```text
-   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.1.0
+   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.2.0
    ```
 
 3. Browser vollständig neu laden.

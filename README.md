@@ -8,6 +8,7 @@
 <p align="center"><a href="README.md">English</a> · <a href="README.de.md">Deutsch</a></p>
 <p align="center">
 <a href="https://github.com/Asmir1975/hc-direct-cards/releases/latest"><img src="https://img.shields.io/github/v/release/Asmir1975/hc-direct-cards?color=176b70&label=version" alt="Latest release"></a>
+<a href="https://github.com/Asmir1975/hc-direct-cards/releases"><img src="https://img.shields.io/github/downloads/Asmir1975/hc-direct-cards/total?color=b9794a&label=downloads" alt="Downloads"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-176b70" alt="MIT license"></a>
 <img src="https://img.shields.io/badge/cards-5-b9794a" alt="5 cards">
 <img src="https://img.shields.io/badge/TypeScript-Lit-3178c6" alt="TypeScript and Lit">
@@ -27,6 +28,10 @@ and settings fold out below.
 
 Numbers such as target temperature, duration and delayed start are set with − and +
 buttons; time values move in minutes, temperatures in steps of 5.
+
+Oven and dishwasher show running time, time left and the finish time. Messages of the
+appliance (for example "insert food now" or "program finished") appear at the top of the
+card, also when the appliance is operated at the device itself.
 
 ## The five cards
 
@@ -60,7 +65,7 @@ appliances. The verified entity contract is `homeconnect_ws`.
 2. Under **Settings → Dashboards → Resources** add it as a **JavaScript module**:
 
    ```text
-   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.1.0
+   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.2.0
    ```
 
 3. Fully reload the browser.
