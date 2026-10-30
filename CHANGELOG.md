@@ -2,7 +2,8 @@
 
 ## Unreleased
 - Number values (target temperature, duration, start in, alarm, coffee amount and others) use a box with − and + buttons instead of a slider. Time values move in minutes and are shown as minutes or hours, temperatures in steps of 5. Repeated taps are sent as one value.
-- Oven: cavity light switch. Dishwasher: extra drying, intensive zone and speed on demand options. All appear only when the integration provides the entity.
+- Hood: own power switch.
+- Oven: cavity light switch. Dishwasher: Smart Start (per program), Auto Smart Start, extra drying, intensive zone and speed on demand. All appear only when the integration provides the entity.
 
 ## 1.0.0 – 2026-10-30
 First release.

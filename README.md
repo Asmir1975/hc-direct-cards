@@ -120,6 +120,7 @@ and no remote-start function for the hob.
 
 - Works with Home Connect Direct 1.13.0 (`homeconnect_ws`). Appliances that the
   integration does not expose are not available in the cards.
+- Some entities, for example the dishwasher's Smart Start switches, are disabled by default in the integration. Enable them in Home Assistant and the cards show them.
 - The hob layout is confirmed for the Siemens EX851LYV5E only.
 
 ## Development

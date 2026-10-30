@@ -303,8 +303,8 @@ let T = class extends HTMLElement {
 };
 T.elementStyles = [], T.shadowRootOptions = { mode: "open" }, T[L("elementProperties")] = /* @__PURE__ */ new Map(), T[L("finalized")] = /* @__PURE__ */ new Map(), tt?.({ ReactiveElement: T }), (X.reactiveElementVersions ??= []).push("2.1.2");
 const le = globalThis, be = (n) => n, Q = le.trustedTypes, ve = Q ? Q.createPolicy("lit-html", { createHTML: (n) => n }) : void 0, Ie = "$lit$", x = `lit$${Math.random().toFixed(9).slice(2)}$`, Oe = "?" + x, it = `<${Oe}>`, E = document, F = () => E.createComment(""), U = (n) => n === null || typeof n != "object" && typeof n != "function", ce = Array.isArray, nt = (n) => ce(n) || typeof n?.[Symbol.iterator] == "function", te = `[ 	
-\f\r]`, H = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, we = /-->/g, $e = />/g, S = RegExp(`>|${te}(?:([^\\s"'>=/]+)(${te}*=${te}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), ke = /'/g, xe = /"/g, De = /^(?:script|style|textarea|title)$/i, st = (n) => (e, ...t) => ({ _$litType$: n, strings: e, values: t }), _ = st(1), C = /* @__PURE__ */ Symbol.for("lit-noChange"), h = /* @__PURE__ */ Symbol.for("lit-nothing"), ze = /* @__PURE__ */ new WeakMap(), A = E.createTreeWalker(E, 129);
+\f\r]`, H = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, we = /-->/g, ke = />/g, z = RegExp(`>|${te}(?:([^\\s"'>=/]+)(${te}*=${te}*(?:[^ 	
+\f\r"'\`<>=]|("|')|))|$)`, "g"), $e = /'/g, xe = /"/g, De = /^(?:script|style|textarea|title)$/i, st = (n) => (e, ...t) => ({ _$litType$: n, strings: e, values: t }), _ = st(1), C = /* @__PURE__ */ Symbol.for("lit-noChange"), h = /* @__PURE__ */ Symbol.for("lit-nothing"), Se = /* @__PURE__ */ new WeakMap(), A = E.createTreeWalker(E, 129);
 function Re(n, e) {
   if (!ce(n) || !n.hasOwnProperty("raw")) throw Error("invalid template strings array");
   return ve !== void 0 ? ve.createHTML(e) : e;
@@ -315,8 +315,8 @@ const ot = (n, e) => {
   for (let l = 0; l < t; l++) {
     const a = n[l];
     let c, u, p = -1, m = 0;
-    for (; m < a.length && (r.lastIndex = m, u = r.exec(a), u !== null); ) m = r.lastIndex, r === H ? u[1] === "!--" ? r = we : u[1] !== void 0 ? r = $e : u[2] !== void 0 ? (De.test(u[2]) && (s = RegExp("</" + u[2], "g")), r = S) : u[3] !== void 0 && (r = S) : r === S ? u[0] === ">" ? (r = s ?? H, p = -1) : u[1] === void 0 ? p = -2 : (p = r.lastIndex - u[2].length, c = u[1], r = u[3] === void 0 ? S : u[3] === '"' ? xe : ke) : r === xe || r === ke ? r = S : r === we || r === $e ? r = H : (r = S, s = void 0);
-    const g = r === S && n[l + 1].startsWith("/>") ? " " : "";
+    for (; m < a.length && (r.lastIndex = m, u = r.exec(a), u !== null); ) m = r.lastIndex, r === H ? u[1] === "!--" ? r = we : u[1] !== void 0 ? r = ke : u[2] !== void 0 ? (De.test(u[2]) && (s = RegExp("</" + u[2], "g")), r = z) : u[3] !== void 0 && (r = z) : r === z ? u[0] === ">" ? (r = s ?? H, p = -1) : u[1] === void 0 ? p = -2 : (p = r.lastIndex - u[2].length, c = u[1], r = u[3] === void 0 ? z : u[3] === '"' ? xe : $e) : r === xe || r === $e ? r = z : r === we || r === ke ? r = H : (r = z, s = void 0);
+    const g = r === z && n[l + 1].startsWith("/>") ? " " : "";
     o += r === H ? a + it : p >= 0 ? (i.push(c), a.slice(0, p) + Ie + a.slice(p) + x + g) : a + x + (p === -2 ? l : g);
   }
   return [Re(n, o + (n[t] || "<?>") + (e === 2 ? "</svg>" : e === 3 ? "</math>" : "")), i];
@@ -334,8 +334,8 @@ class j {
     for (; (s = A.nextNode()) !== null && a.length < l; ) {
       if (s.nodeType === 1) {
         if (s.hasAttributes()) for (const p of s.getAttributeNames()) if (p.endsWith(Ie)) {
-          const m = u[r++], g = s.getAttribute(p).split(x), k = /([.?@])?(.*)/.exec(m);
-          a.push({ type: 1, index: o, name: k[2], strings: g, ctor: k[1] === "." ? at : k[1] === "?" ? lt : k[1] === "@" ? ct : ee }), s.removeAttribute(p);
+          const m = u[r++], g = s.getAttribute(p).split(x), $ = /([.?@])?(.*)/.exec(m);
+          a.push({ type: 1, index: o, name: $[2], strings: g, ctor: $[1] === "." ? at : $[1] === "?" ? lt : $[1] === "@" ? ct : ee }), s.removeAttribute(p);
         } else p.startsWith(x) && (a.push({ type: 6, index: o }), s.removeAttribute(p));
         if (De.test(s.tagName)) {
           const p = s.textContent.split(x), m = p.length - 1;
@@ -431,8 +431,8 @@ class q {
     }
   }
   _$AC(e) {
-    let t = ze.get(e.strings);
-    return t === void 0 && ze.set(e.strings, t = new j(e)), t;
+    let t = Se.get(e.strings);
+    return t === void 0 && Se.set(e.strings, t = new j(e)), t;
   }
   k(e) {
     ce(this._$AH) || (this._$AH = [], this._$AR());
@@ -528,7 +528,7 @@ const _t = (n, e, t) => {
   return s._$AI(n), s;
 };
 const de = globalThis;
-let $ = class extends T {
+let k = class extends T {
   constructor() {
     super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
   }
@@ -550,9 +550,9 @@ let $ = class extends T {
     return C;
   }
 };
-$._$litElement$ = !0, $.finalized = !0, de.litElementHydrateSupport?.({ LitElement: $ });
+k._$litElement$ = !0, k.finalized = !0, de.litElementHydrateSupport?.({ LitElement: k });
 const ut = de.litElementPolyfillSupport;
-ut?.({ LitElement: $ });
+ut?.({ LitElement: k });
 (de.litElementVersions ??= []).push("4.2.2");
 const pt = {
   connection_entity: ["connection"],
@@ -742,6 +742,12 @@ const pt = {
     ],
     hygiene_entity: [
       "switch_hygiene_plus"
+    ],
+    smart_start_entity: [
+      "switch_smart_start"
+    ],
+    auto_smart_start_entity: [
+      "switch_auto_smart_start"
     ],
     extra_dry_entity: [
       "switch_extra_dry"
@@ -1117,6 +1123,8 @@ const yt = {
   "field.level_entity": "Stufe",
   "field.rapid_preheat_entity": "Schnelles Vorheizen",
   "field.cavity_light_entity": "Garraumlicht",
+  "field.smart_start_entity": "Smart Start",
+  "field.auto_smart_start_entity": "Automatischer Smart Start",
   "field.extra_dry_entity": "Extratrocknen",
   "field.intensive_zone_entity": "Intensivzone",
   "field.speed_on_demand_entity": "Schnell auf Knopfdruck",
@@ -1185,7 +1193,7 @@ function d(n, e, t) {
 function M(n, e) {
   return d(n, `field.${e.key}`, e.label);
 }
-async function Se(n) {
+async function ze(n) {
   if (navigator.clipboard?.writeText)
     try {
       await navigator.clipboard.writeText(n);
@@ -1235,7 +1243,7 @@ function vt(n, e) {
 function wt(n) {
   return (n || "").replace(/[\r\n]+/g, " ").trim();
 }
-async function $t(n, e, t, i) {
+async function kt(n, e, t, i) {
   const { candidates: s, suggestions: o } = await Be(n, e, t, i), r = t.fields.flatMap((a) => {
     const c = i[a.key], u = o[a.key], p = typeof c == "string" ? c : typeof u == "string" ? `${u} (suggested)` : "—";
     return [`- ${a.key}: ${p}`];
@@ -1260,7 +1268,7 @@ async function $t(n, e, t, i) {
   ].join(`
 `);
 }
-const kt = [
+const $t = [
   { id: "general", label: "General", icon: "mdi:information-outline" },
   { id: "program", label: "Program", icon: "mdi:tune-variant" },
   { id: "actions", label: "Actions", icon: "mdi:gesture-tap-button" },
@@ -1268,7 +1276,7 @@ const kt = [
   { id: "status", label: "Status & care", icon: "mdi:heart-pulse" },
   { id: "settings", label: "Device settings", icon: "mdi:cog-outline" }
 ];
-class W extends $ {
+class W extends k {
   constructor() {
     super(...arguments), this._discovering = !1, this._copying = "", this._notice = "", this._detectedFields = {}, this._autoDetectedAnchor = "";
   }
@@ -1351,7 +1359,7 @@ class W extends $ {
     if (!(!this._config || this._copying)) {
       this._copying = "yaml";
       try {
-        await Se(vt(this._config, this.definition)), this._notice = d(this.hass, "editor.yaml_copied", "YAML configuration copied to the clipboard.");
+        await ze(vt(this._config, this.definition)), this._notice = d(this.hass, "editor.yaml_copied", "YAML configuration copied to the clipboard.");
       } catch (e) {
         this._notice = e instanceof Error ? e.message : "Could not copy the YAML configuration.";
       } finally {
@@ -1363,8 +1371,8 @@ class W extends $ {
     if (!(!this.hass || !v(this._config) || this._copying)) {
       this._copying = "report";
       try {
-        const e = await $t(this.hass, this._config.entity || "", this.definition, this._config);
-        await Se(e), this._notice = d(this.hass, "editor.report_copied", "Entity discovery report copied. Review personal labels before sharing it.");
+        const e = await kt(this.hass, this._config.entity || "", this.definition, this._config);
+        await ze(e), this._notice = d(this.hass, "editor.report_copied", "Entity discovery report copied. Review personal labels before sharing it.");
       } catch (e) {
         this._notice = e instanceof Error ? e.message : "Could not create the entity discovery report.";
       } finally {
@@ -1442,7 +1450,7 @@ class W extends $ {
         <div class="field"><label for="icon">${d(this.hass, "editor.icon", "Icon override")}</label><input id="icon" type="text" .value=${this._config.icon || ""} placeholder=${this.definition.defaultIcon} @change=${(e) => this.change("icon", e.currentTarget.value)}></div>
         <div class="field"><label for="accent_color">${d(this.hass, "editor.accent_color", "Accent color")}</label><input id="accent_color" type="text" .value=${this._config.accent_color || ""} placeholder=${`${this.definition.accent} / var(--primary-color)`} @change=${(e) => this.change("accent_color", e.currentTarget.value)}></div>
       </div></section>
-      <details><summary>${d(this.hass, "editor.manual_mapping", "Manual mapping (optional)")}</summary>${kt.map((e) => {
+      <details><summary>${d(this.hass, "editor.manual_mapping", "Manual mapping (optional)")}</summary>${$t.map((e) => {
       const t = this.definition.fields.filter((i) => i.section === e.id);
       return t.length ? _`<section class="group"><h3 class="group-title"><ha-icon .icon=${e.icon}></ha-icon>${d(this.hass, `section.${e.id}`, e.label)}</h3><div class="fields">${t.map((i) => this.renderEntityField(i))}
           ${e.id === "program" ? this.renderProgramNames() : ""}
@@ -1504,6 +1512,8 @@ const V = [
     { key: "rinse_aid_entity", label: "Rinse aid", section: "status", kind: "status", domains: ["sensor", "binary_sensor"], aliases: ["rinse aid", "klarspuler"], warning: !0 },
     { key: "vario_speed_entity", label: "VarioSpeed Plus", section: "options", kind: "toggle", domains: ["switch"], aliases: ["variospeed"] },
     { key: "hygiene_entity", label: "Hygiene Plus", section: "options", kind: "toggle", domains: ["switch"], aliases: ["hygiene plus"] },
+    { key: "smart_start_entity", label: "Smart Start", section: "options", kind: "toggle", domains: ["switch"], aliases: ["smart start"] },
+    { key: "auto_smart_start_entity", label: "Auto Smart Start", section: "settings", kind: "toggle", domains: ["switch"], aliases: ["auto smart start", "automatischer smart start"] },
     { key: "extra_dry_entity", label: "Extra drying", section: "options", kind: "toggle", domains: ["switch"], aliases: ["extra drying", "extratrocknen"] },
     { key: "intensive_zone_entity", label: "Intensive zone", section: "options", kind: "toggle", domains: ["switch"], aliases: ["intensive zone", "intensivzone"] },
     { key: "speed_on_demand_entity", label: "Speed on demand", section: "options", kind: "toggle", domains: ["switch"], aliases: ["speed on demand", "schnell auf knopfdruck"] },
@@ -1578,7 +1588,7 @@ const V = [
     { key: "cup_warmer_entity", label: "Cup warmer", section: "settings", kind: "toggle", domains: ["switch"], aliases: ["cup warmer", "tassenwarmer"] },
     { key: "child_lock_entity", label: "Child lock", section: "settings", kind: "toggle", domains: ["switch"], aliases: ["child lock", "kindersicherung"] }
   ]
-}, z = {
+}, S = {
   kind: "hood",
   cardType: "custom:hc-direct-hood-card",
   editorTag: "hc-direct-hood-card-editor",
@@ -1772,14 +1782,14 @@ const V = [
       ]
     }
   ]
-}, xt = ["100", "200", "300", "400"], zt = {
+}, xt = ["100", "200", "300", "400"], St = {
   state: "Zone state",
   operation: "Operating state",
   power: "Power level",
   remaining: "Remaining time",
   frying: "Frying sensor",
   progress: "Progress"
-}, St = xt.flatMap((n) => Object.entries(zt).map(([e, t]) => ({
+}, zt = xt.flatMap((n) => Object.entries(St).map(([e, t]) => ({
   key: "zone_" + n + "_" + e + "_entity",
   label: "Zone " + n + " · " + t,
   section: "status",
@@ -1796,7 +1806,7 @@ const V = [
   accent: "#c75b30",
   fields: [
     ...V.filter((n) => ["entity", "status_entity", "operating_state_entity", "connection_entity"].includes(n.key)),
-    ...St,
+    ...zt,
     { key: "bridge_mode_entity", label: "varioInduction (join zones)", section: "program", kind: "select", domains: ["select"] },
     { key: "hob_mode_entity", label: "Power mode", section: "program", kind: "select", domains: ["select"] },
     { key: "power_move_front_left_entity", label: "powerMove level front left", section: "settings", kind: "select", domains: ["select"] },
@@ -1833,10 +1843,10 @@ class Ct extends W {
 b(I.editorTag, Ct);
 class Tt extends W {
   constructor() {
-    super(...arguments), this.definition = z;
+    super(...arguments), this.definition = S;
   }
 }
-b(z.editorTag, Tt);
+b(S.editorTag, Tt);
 class Mt extends W {
   constructor() {
     super(...arguments), this.definition = D;
@@ -2100,7 +2110,7 @@ function ii(n, e, t) {
   const i = t.toLocaleString(he(n), { maximumFractionDigits: 2 });
   return e.unit ? `${i} ${e.unit}` : i;
 }
-class ni extends $ {
+class ni extends k {
   constructor() {
     super(...arguments), this.valueLabels = {}, this.label = "", this.kind = "status", this.disabled = !1, this.busy = !1;
   }
@@ -2187,7 +2197,7 @@ class ni extends $ {
   }
 }
 b("hcd-entity-control", ni);
-class si extends $ {
+class si extends k {
   constructor() {
     super(...arguments), this.title = "Section", this.icon = "mdi:tune-variant", this.open = !0;
   }
@@ -2215,7 +2225,7 @@ class si extends $ {
   }
 }
 b("hcd-expandable-section", si);
-class oi extends $ {
+class oi extends k {
   constructor() {
     super(...arguments), this.actions = [], this.busyIds = /* @__PURE__ */ new Set(), this.confirmingId = "";
   }
@@ -2247,7 +2257,7 @@ const ri = {
   status: { title: "Status & care", icon: "mdi:information-outline" },
   settings: { title: "Device settings", icon: "mdi:cog-outline" }
 };
-class G extends $ {
+class G extends k {
   constructor() {
     super(...arguments), this._expanded = !1, this._busyIds = /* @__PURE__ */ new Set(), this._error = "", this._confirmingId = "", this._expandedByUser = !1, this._discoveryAnchor = "", this._discovering = !1;
   }
@@ -2521,10 +2531,10 @@ class ci extends G {
 b("hc-direct-coffee-card", ci);
 class di extends G {
   constructor() {
-    super(...arguments), this.definition = z;
+    super(...arguments), this.definition = S;
   }
   static getConfigElement() {
-    return document.createElement(z.editorTag);
+    return document.createElement(S.editorTag);
   }
   static getStubConfig() {
     return {};
@@ -2549,15 +2559,15 @@ class di extends G {
       </div>
       ${[["working_light_entity", i], ["ambient_light_entity", s]].map(([l, a]) => a && typeof a != "string" ? _`
         <div class="inline-control"><hcd-entity-control .hass=${this.hass} .entity=${a} kind="light" .busy=${this._busyIds.has(a.entity_id)}
-          .label=${M(this.hass, z.fields.find((c) => c.key === l))}></hcd-entity-control></div>` : h)}
+          .label=${M(this.hass, S.fields.find((c) => c.key === l))}></hcd-entity-control></div>` : h)}
       <div class="section-grid">${["grease_filter_entity", "carbon_filter_entity"].map((l) => {
       const a = this.getState(l);
-      return a ? _`<hcd-entity-control .hass=${this.hass} .entity=${a} kind="status" .label=${M(this.hass, z.fields.find((c) => c.key === l))}></hcd-entity-control>` : h;
+      return a ? _`<hcd-entity-control .hass=${this.hass} .entity=${a} kind="status" .label=${M(this.hass, S.fields.find((c) => c.key === l))}></hcd-entity-control>` : h;
     })}</div>
     `;
   }
 }
-b(z.cardType.replace("custom:", ""), di);
+b(S.cardType.replace("custom:", ""), di);
 function hi(n) {
   return y(n) && ["residuelheat", "residualheat"].includes(w(n));
 }
@@ -2603,14 +2613,14 @@ class mi extends G {
     })}
       </div>` : h}
       ${l.zones.filter(e).map((a) => {
-      const c = (qe) => this.getState("zone_" + a + "_" + qe + "_entity"), u = c("state"), p = c("operation"), m = c("power"), g = c("remaining"), k = c("frying"), ue = hi(u), Ze = _i(u, p), pe = u || m || p || g;
+      const c = (qe) => this.getState("zone_" + a + "_" + qe + "_entity"), u = c("state"), p = c("operation"), m = c("power"), g = c("remaining"), $ = c("frying"), ue = hi(u), Ze = _i(u, p), pe = u || m || p || g;
       return _`<button type="button" data-zone=${a} class="zone ${ue ? "hot" : Ze ? "active" : ""}" @click=${() => pe && _e(this, pe.entity_id)}
         aria-label=${"Zone " + a + ": " + f(this.hass, u || p)}>
         <span class="zone-title">Zone ${a}<span>${f(this.hass, p || u)}</span></span>
         <span class="zone-power">${f(this.hass, m)}</span>
         ${ue ? _`<span class="hot-label">${d(this.hass, "direct.residual_heat", "Residual heat")}</span>` : h}
         ${y(g) ? _`<span class="zone-meta">${d(this.hass, "field.remaining_time_entity", "Remaining time")}: ${f(this.hass, g)}</span>` : h}
-        ${y(k) && k.state !== "off" ? _`<span class="zone-meta">${d(this.hass, "direct.frying", "Frying sensor")}: ${f(this.hass, k)}</span>` : h}
+        ${y($) && $.state !== "off" ? _`<span class="zone-meta">${d(this.hass, "direct.frying", "Frying sensor")}: ${f(this.hass, $)}</span>` : h}
       </button>`;
     })}</div>`)}</div><p class="read-only-note">${d(this.hass, "direct.hob_readonly", "Zone values are read-only. Tap a zone for details.")}</p>`;
   }
@@ -2637,7 +2647,7 @@ function fi(n, e, t) {
   ].filter(Boolean).join(" "));
   return gi[t].some((o) => s.includes(Me(o)));
 }
-const yi = [P, N, I, z, D];
+const yi = [P, N, I, S, D];
 window.customCards = window.customCards || [];
 for (const n of yi)
   window.customCards.some((e) => e.type === n.cardType.replace("custom:", "")) || window.customCards.push({

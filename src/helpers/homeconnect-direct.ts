@@ -192,6 +192,12 @@ const specific: Record<ApplianceKind, Record<string, string[]>> = {
     "hygiene_entity": [
       "switch_hygiene_plus"
     ],
+    "smart_start_entity": [
+      "switch_smart_start"
+    ],
+    "auto_smart_start_entity": [
+      "switch_auto_smart_start"
+    ],
     "extra_dry_entity": [
       "switch_extra_dry"
     ],

@@ -25,6 +25,22 @@ describe("Saved device profiles and DEV entity snapshots",()=>{
     expect(result.operating_state_entity).toBe("sensor.siemens_"+(kind==="coffee"?"coffeemaker":kind)+"_betriebszustand");
   });
 
+  it("finds the new dishwasher options, hood power switch and oven cavity light",async()=>{
+    const dish=ownHass("dishwasher");
+    const d=await discoverEntities(dish,fixture.models.dishwasher.registry[0].entity_id,dishwasherDefinition,{type:dishwasherDefinition.cardType});
+    expect(d.smart_start_entity).toBe("switch.siemens_dishwasher_smart_start");
+    expect(d.auto_smart_start_entity).toBe("switch.siemens_dishwasher_automatischer_smart_start");
+    expect(d.extra_dry_entity).toBe("switch.siemens_dishwasher_extratrocknen");
+    expect(d.intensive_zone_entity).toBe("switch.siemens_dishwasher_intensivzone");
+    expect(d.speed_on_demand_entity).toBe("switch.siemens_dishwasher_schnell_auf_knopfdruck");
+    const hood=ownHass("hood");
+    const h=await discoverEntities(hood,fixture.models.hood.registry[0].entity_id,hoodDefinition,{type:hoodDefinition.cardType});
+    expect(h.power_entity).toBe("switch.siemens_hood_einschalter");
+    const oven=ownHass("oven");
+    const o=await discoverEntities(oven,fixture.models.oven.registry[0].entity_id,ovenDefinition,{type:ovenDefinition.cardType});
+    expect(o.cavity_light_entity).toBe("light.siemens_oven_garraumlicht");
+  });
+
   it("detects LC91KLT60's real level select, dimmable light and filters",async()=>{
     const hass=ownHass("hood");
     const result=await discoverEntities(hass,fixture.models.hood.registry[0].entity_id,hoodDefinition,{type:hoodDefinition.cardType});

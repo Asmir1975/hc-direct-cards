@@ -121,6 +121,7 @@ Keine ergänzte Zonen-Leistungssteuerung und keine Kochfeld-Fernstartfunktion.
 
 - Funktioniert mit Home Connect Direct 1.13.0 (`homeconnect_ws`). Was die Integration
   nicht bereitstellt, steht in den Karten nicht zur Verfügung.
+- Manche Entitäten, etwa die Smart-Start-Schalter des Geschirrspülers, sind in der Integration standardmäßig deaktiviert. In Home Assistant aktivieren, dann zeigen die Karten sie an.
 - Die Kochfeldanordnung ist nur für das Siemens EX851LYV5E bestätigt.
 
 ## Entwicklung
