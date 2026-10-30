@@ -1,0 +1,45 @@
+{
+  "name": "hc-direct-cards",
+  "version": "0.3.0-dev.1",
+  "description": "Five Home Assistant cards for Home Connect Direct",
+  "license": "MIT",
+  "author": "Asmir1975",
+  "homepage": "https://github.com/Asmir1975/hc-direct-cards",
+  "keywords": [
+    "home-assistant",
+    "lovelace",
+    "custom-card",
+    "hacs",
+    "home-connect"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "dev": "vite build --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "demo": "vite --host 127.0.0.1"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "typescript": "^5.9.2",
+    "vite": "^7.1.5",
+    "vitest": "^5.0.0"
+  },
+  "dependencies": {
+    "lit": "^3.3.1"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Asmir1975/hc-direct-cards.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Asmir1975/hc-direct-cards/issues"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  }
+}

@@ -1,0 +1,28 @@
+name: Fehler melden
+description: Problem mit einer der fünf Karten
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: Karten-, HA- und Integrationsversion
+    validations:
+      required: true
+  - type: input
+    id: appliance
+    attributes:
+      label: Karte und Gerätemodell
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Beobachtung und erwartetes Verhalten
+      description: Schritte, Gerätebeobachtung und Simulationen unterscheiden.
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: Relevante Konfiguration oder Fehlermeldung
+      description: Keine Zugangsdaten oder privaten Geräteschlüssel angeben.
+      render: yaml

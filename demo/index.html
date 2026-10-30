@@ -1,0 +1,69 @@
+<!doctype html><html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HC Direct Cards · Offline demo</title><style>
+:root{font-family:system-ui;color:#eee;background:#141414;--primary-text-color:#eee;--secondary-text-color:#aaa;--card-background-color:#202020;--secondary-background-color:#292929;--divider-color:#444;--disabled-color:#777;--warning-color:#dca255}
+body{margin:20px}h1{font-size:21px}p{font-size:12px;max-width:460px;line-height:1.5}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}button,select{font:inherit;color:inherit;background:#292929;border:1px solid #555;padding:8px;border-radius:6px}
+#card{width:460px;max-width:100%}body.narrow #card{width:320px}pre{font-size:11px;white-space:pre-wrap}#checks{max-width:460px;max-height:80px;overflow:auto}
+</style><h1>HC Direct Cards · Offline demo</h1><p>Lokaler Gestaltungsvorschlag. Eigene gespeicherte Entitäten; Bereitschaft ist zur Ansicht simuliert. Keine HA-/Geräteverbindung. Klicks werden nur lokal protokolliert.</p>
+<div class="toolbar"><select aria-label="Gerät"><option value="coffee">CoffeeMaker</option><option value="oven">Ofen</option><option value="dishwasher">Geschirrspüler</option><option value="hood">Haube</option><option value="hob">Kochfeld</option></select><select id="lang" aria-label="Sprache / Language"><option value="de">Deutsch</option><option value="en">English</option></select><button id="width">Breite 320 / 460</button><button id="settings">Einstellungen aufklappen</button></div><button id="check">Layoutprüfung: 5 Geräte</button><pre id="checks">Layoutprüfung noch nicht gestartet.</pre><p id="scope"></p><div id="card"></div><pre id="events">Noch keine Aktion.</pre>
+<script type="module">
+import "../dist/home-connect-direct-cards.js";
+customElements.define("ha-icon",class extends HTMLElement{});
+const registered=window.customCards.filter(c=>c.type.startsWith("hc-direct-"));
+document.querySelector("#scope").textContent=registered.length+" Kartentypen: "+registered.map(c=>c.type).join(", ");
+const fixture=await fetch("../tests/fixtures/own-devices-1130.json").then(r=>r.json());
+let card;
+async function show(kind){
+ const model=fixture.models[kind],states=structuredClone(model.states);
+ for(const [id,state] of Object.entries(states)){
+  if(id.endsWith("_einschalter"))states[id]={...state,state:"on"};
+  if(id.endsWith("_betriebszustand")&&!id.includes("_zone_"))states[id]={...state,state:"ready"};
+ }
+ const hass={states,language:new URLSearchParams(location.search).get("lang")==="en"?"en":"de",callWS:async()=>model.registry,
+  formatEntityState:e=>e.attributes.fixture_state_labels?.[e.state]||(e.entity_id.startsWith("switch.")&&["on","off"].includes(e.state)?(e.state==="on"?"Ein":"Aus"):e.state)+(e.attributes.unit_of_measurement?" "+e.attributes.unit_of_measurement:""),
+  callService:async(domain,service,data)=>{document.querySelector("#events").textContent="Lokaler Testaufruf: "+JSON.stringify({domain,service,...data});}
+ };
+ card=document.createElement("hc-direct-"+kind+"-card");
+ card.hass=hass;card.setConfig({type:"custom:hc-direct-"+kind+"-card",device_id:"offline-"+kind,name:kind==="coffee"?"Siemens EQ700":kind,default_expanded:true});
+ document.querySelector("#card").replaceChildren(card);
+}
+document.querySelector("select").onchange=e=>show(e.target.value);
+const lang=document.querySelector("#lang");lang.value=new URLSearchParams(location.search).get("lang")==="en"?"en":"de";
+lang.onchange=()=>{const url=new URL(location.href);url.searchParams.set("lang",lang.value);location.href=url;};
+document.querySelector("#width").onclick=()=>document.body.classList.toggle("narrow");
+document.querySelector("#settings").onclick=()=>{
+ for(const section of card.shadowRoot.querySelectorAll("hcd-expandable-section"))
+  if(/einstellungen|bedienung/i.test(section.title))section.open=true;
+};
+document.body.addEventListener("hass-action",e=>{document.querySelector("#events").textContent="HA-Dialog angefordert: "+e.detail.config.entity+" (lokales Ereignis; kein echter HA-Dialog)";});
+const settle=async()=>{for(let i=0;i<5;i++){await new Promise(r=>requestAnimationFrame(r));await card.updateComplete;}};
+document.querySelector("#check").onclick=async()=>{
+ const results={variant:"hc-direct-cards",devices:[],measuredControls:0,overlaps:[],overflow:[]};
+ for(const kind of ["coffee","oven","dishwasher","hood","hob"]){
+  for(const narrow of [false,true]){
+   document.body.classList.toggle("narrow",narrow);await show(kind);await settle();
+   for(const section of card.shadowRoot.querySelectorAll("hcd-expandable-section"))section.open=true;
+   await settle();
+   for(const el of card.shadowRoot.querySelectorAll("hcd-entity-control")){
+    const label=el.shadowRoot?.querySelector(".label"),control=el.shadowRoot?.querySelector("select,button.switch,.value");
+    if(!label||!control||!label.getBoundingClientRect().height)continue;
+    const a=label.getBoundingClientRect(),b=control.getBoundingClientRect();
+    results.measuredControls++;
+    if(a.right>b.left+1)results.overlaps.push({kind,width:narrow?320:460,label:label.textContent.trim()});
+    if(el.scrollWidth>el.clientWidth+1)results.overflow.push({kind,width:narrow?320:460,label:label.textContent.trim()});
+   }
+   results.devices.push({kind,width:narrow?320:460});
+  }
+ }
+ document.body.classList.remove("narrow");await show("coffee");await settle();
+ for(const section of card.shadowRoot.querySelectorAll("hcd-expandable-section"))if(/einstellungen|bedienung/i.test(section.title))section.open=true;
+ await settle();document.querySelector("#checks").textContent=JSON.stringify(results,null,2);
+};
+await show("coffee");
+if(new URLSearchParams(location.search).has("showcase")){
+ document.querySelector(".toolbar").style.display="none";
+ for(const id of ["check","checks","events"])document.querySelector("#"+id).style.display="none";
+ if(new URLSearchParams(location.search).get("width")==="320")document.body.classList.add("narrow");
+ await settle();
+ for(const section of card.shadowRoot.querySelectorAll("hcd-expandable-section"))if(/einstellungen|bedienung/i.test(section.title))section.open=true;
+}
+</script></html>
