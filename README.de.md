@@ -1,9 +1,4 @@
-<p align="center">
-<picture>
-<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Asmir1975/hc-direct-cards/main/assets/logo-dark.png">
-<img src="https://raw.githubusercontent.com/Asmir1975/hc-direct-cards/main/assets/logo.png" alt="HC Direct Cards" width="640">
-</picture>
-</p>
+<p align="center"><img src="https://raw.githubusercontent.com/Asmir1975/hc-direct-cards/main/assets/logo.png" alt="HC Direct Cards" width="640"></p>
 <p align="center">Home-Assistant-Karten für Home Connect Direct</p>
 <p align="center"><a href="README.md">English</a> · <a href="README.de.md">Deutsch</a></p>
 <p align="center">
