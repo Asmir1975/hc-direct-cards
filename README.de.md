@@ -25,6 +25,9 @@ Gerät im visuellen Editor auswählen; die Karte ordnet vorhandene Entitäten
 automatisch zu. Die Hauptansicht zeigt die tägliche Bedienung. Weitere Werte
 und Einstellungen lassen sich aufklappen.
 
+Zahlenwerte wie Solltemperatur, Dauer und verzögerter Start werden mit den Tasten − und +
+eingestellt; Zeiten gehen in Minuten, Temperaturen in 5er-Schritten.
+
 ## Die fünf Karten
 
 | Gerät | Kartentyp | Funktionen |
@@ -50,7 +53,6 @@ von Home Assistant selbst.
 
 Voraussetzung ist eine eingerichtete **Home Connect Direct 1.13.0** Integration
 mit verfügbaren Geräten. Der geprüfte Entity-Vertrag heißt `homeconnect_ws`.
-Die offizielle Home-Connect-Cloud-Integration hat eine andere Entity-Struktur.
 
 ### Manuell
 
@@ -59,7 +61,7 @@ Die offizielle Home-Connect-Cloud-Integration hat eine andere Entity-Struktur.
 2. Unter **Einstellungen → Dashboards → Ressourcen** als **JavaScript-Modul** eintragen:
 
    ```text
-   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.0.0
+   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.1.0
    ```
 
 3. Browser vollständig neu laden.

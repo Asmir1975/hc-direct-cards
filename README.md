@@ -25,6 +25,9 @@ Pick the appliance in the visual editor and the card assigns the matching
 entities automatically. The main view shows everyday controls; further values
 and settings fold out below.
 
+Numbers such as target temperature, duration and delayed start are set with − and +
+buttons; time values move in minutes, temperatures in steps of 5.
+
 ## The five cards
 
 | Appliance | Card type | What it shows |
@@ -48,8 +51,7 @@ falls back to English. Option and state names come from Home Assistant itself.
 ## Installation
 
 Requires a working **Home Connect Direct 1.13.0** integration with available
-appliances. The verified entity contract is `homeconnect_ws`. The official Home
-Connect cloud integration has a different entity structure.
+appliances. The verified entity contract is `homeconnect_ws`.
 
 ### Manual
 
@@ -58,7 +60,7 @@ Connect cloud integration has a different entity structure.
 2. Under **Settings → Dashboards → Resources** add it as a **JavaScript module**:
 
    ```text
-   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.0.0
+   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.1.0
    ```
 
 3. Fully reload the browser.
