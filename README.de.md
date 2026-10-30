@@ -7,8 +7,8 @@
 <p align="center"><strong>Fünf Küchengeräte. Eine klare Bedienung.</strong></p>
 <p align="center"><a href="README.md">English</a> · <a href="README.de.md">Deutsch</a></p>
 <p align="center">
+<a href="https://github.com/Asmir1975/hc-direct-cards/releases/latest"><img src="https://img.shields.io/github/v/release/Asmir1975/hc-direct-cards?color=176b70&label=version" alt="Aktuelle Version"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/Lizenz-MIT-176b70" alt="MIT-Lizenz"></a>
-<a href="https://github.com/Asmir1975/homeconnect_direct"><img src="https://img.shields.io/badge/Home_Connect_Direct-1.13.0-176b70" alt="Für Home Connect Direct 1.13.0"></a>
 <img src="https://img.shields.io/badge/Karten-5-b9794a" alt="5 Karten">
 <img src="https://img.shields.io/badge/TypeScript-Lit-3178c6" alt="TypeScript und Lit">
 </p>

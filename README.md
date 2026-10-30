@@ -7,8 +7,8 @@
 <p align="center"><strong>Five kitchen appliances. One clear interface.</strong></p>
 <p align="center"><a href="README.md">English</a> · <a href="README.de.md">Deutsch</a></p>
 <p align="center">
+<a href="https://github.com/Asmir1975/hc-direct-cards/releases/latest"><img src="https://img.shields.io/github/v/release/Asmir1975/hc-direct-cards?color=176b70&label=version" alt="Latest release"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-176b70" alt="MIT license"></a>
-<a href="https://github.com/Asmir1975/homeconnect_direct"><img src="https://img.shields.io/badge/Home_Connect_Direct-1.13.0-176b70" alt="For Home Connect Direct 1.13.0"></a>
 <img src="https://img.shields.io/badge/cards-5-b9794a" alt="5 cards">
 <img src="https://img.shields.io/badge/TypeScript-Lit-3178c6" alt="TypeScript and Lit">
 </p>
