@@ -347,20 +347,23 @@ export abstract class BaseApplianceCard extends LitElement {
     const programNames = this._config.program_names;
 
     const showActivity = mode !== "off" && (isAvailable(program) || isAvailable(summaryRemaining) || summaryProgress !== undefined);
+    // Open card: the activity block below already shows progress and time, so the header does not repeat them.
+    const headerProgress = summaryProgress !== undefined && this._config.show_progress !== false && !(this._expanded && showActivity);
+    const headerRemaining = isAvailable(summaryRemaining) && this._config.show_remaining_time !== false && !(this._expanded && showActivity);
 
     return html`<ha-card style=${styleMap({ "--hc-accent": accent })} @hcd-control=${this.handleControl} @hcd-action=${this.handleAction}>
       <div class="shell mode-${mode} ${this._expanded ? "expanded" : ""} ${animations ? "" : "no-animation"} ${mode === "unavailable" ? "unavailable" : ""}">
-        <div class="summary ${summaryProgress !== undefined && this._config.show_progress !== false ? "has-progress" : ""}">
+        <div class="summary ${headerProgress ? "has-progress" : ""}">
           <button class="summary-button header-button" type="button" ?disabled=${!infoEntityId} @click=${this.showMoreInfo} title=${translate(this.hass, "action.more_info", "More information")} aria-label=${translate(this.hass, "action.more_info", "More information")}>
             <hcd-appliance-header .name=${this._config.name || device?.name_by_user || device?.name || translate(this.hass, `device.${this.definition.kind}`, this.definition.defaultName)} .icon=${this._config.icon || this.definition.defaultIcon}
               .status=${displayState(this.hass, headerStatus)} .program=${isAvailable(summaryProgram) ? displayProgramName(this.hass, summaryProgram!, programNames) : ""} .phase=${phase && phase !== displayState(this.hass, headerStatus) ? phase : ""} .tone=${stateTone(status)} .offline=${offline} .mode=${mode} .accent=${accent}></hcd-appliance-header>
           </button>
           <button class="summary-button summary-toggle" type="button" @click=${this.toggleExpanded} aria-expanded=${String(this._expanded)} aria-label=${translate(this.hass, "action.toggle_details", "Toggle details")}><div class="metrics">
             ${prominent.map(({ entity }) => html`<span class="metric">${displayState(this.hass!, entity)}</span>`)}
-            ${summaryProgress !== undefined && this._config.show_progress !== false ? html`<span class="metric progress">${Math.round(summaryProgress)}%</span>` : ""}
-            ${isAvailable(summaryRemaining) && this._config.show_remaining_time !== false ? html`<span class="metric">${displayState(this.hass, summaryRemaining)}</span>` : ""}
+            ${headerProgress ? html`<span class="metric progress">${Math.round(summaryProgress)}%</span>` : ""}
+            ${headerRemaining ? html`<span class="metric">${displayState(this.hass, summaryRemaining)}</span>` : ""}
           </div><ha-icon class="chevron" icon="mdi:chevron-down"></ha-icon></button>
-          ${summaryProgress !== undefined && this._config.show_progress !== false ? html`<div class="summary-progress" aria-hidden="true"><div class="summary-progress-fill" style=${`transform:scaleX(${summaryProgress / 100})`}></div></div>` : ""}
+          ${headerProgress ? html`<div class="summary-progress" aria-hidden="true"><div class="summary-progress-fill" style=${`transform:scaleX(${summaryProgress / 100})`}></div></div>` : ""}
         </div>
         ${message ? html`<div class="message-strip"><div class="notice ${message.tone}" role="status"><ha-icon .icon=${message.icon}></ha-icon>${message.text}</div></div>` : ""}
         <div class="details"><div class="details-inner"><div class="details-content">
