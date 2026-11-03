@@ -2682,7 +2682,7 @@ class A extends $ {
     return this._expanded ? 6 : 1;
   }
   getGridOptions() {
-    return { columns: 6, min_columns: 3 };
+    return { columns: 12, min_columns: 3, rows: "auto" };
   }
   disconnectedCallback() {
     super.disconnectedCallback(), this.clearConfirmation();

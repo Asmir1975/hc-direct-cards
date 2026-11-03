@@ -116,7 +116,7 @@ export abstract class BaseApplianceCard extends LitElement {
 
   getCardSize(): number { return this._expanded ? 6 : 1; }
 
-  getGridOptions() { return { columns: 6, min_columns: 3 }; }
+  getGridOptions() { return { columns: 12, min_columns: 3, rows: "auto" }; }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
