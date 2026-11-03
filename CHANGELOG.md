@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.1 – 2026-11-03
+Hob card.
+- The four zones sit in a grid like the real hob: 200 and 300 above 100 and 400. Zones of one row have the same height, also with Join and powerMove.
+- A zone shows its power level only while its operation state is running. Otherwise it shows "Off". The hob can keep the last level and an active status after it went off.
+- Remaining time shows only above zero. The state text in each zone is gone, and the Join and power mode selects share one row (stacked on narrow cards).
+- Join and powerMove no longer print a label per side, and powerMove no longer lists the default values for rear, middle and front. They stay in the device settings.
+- Join also shows when the diagnostic sensor "Join zone" is on. It comes with integration versions after 1.13.0 and also reacts when the zones are joined at the hob itself. The sensor reports one value for the whole hob, so both sides show as joined.
+
 ## 1.0.0 – 2026-11-03
 First release of the new card design.
 - Six cards for Home Connect Direct 1.13.0: hob, extractor hood, oven, dishwasher, coffee machine and dryer. The dryer card has only been tested with made-up data.

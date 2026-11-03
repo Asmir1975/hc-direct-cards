@@ -15,6 +15,7 @@ const de: Record<string, string> = {
   "editor.manual_mapping": "Manuelle Zuordnung (optional)",
   "direct.select_device": "Wähle das Gerät im Karteneditor aus.",
   "editor.device": "Gerät",
+  "field.join_zone_entity": "Zonen verbunden",
   "field.bridge_mode_entity": "varioInduktion (Zonen verbinden)",
   "field.hob_mode_entity": "Betriebsart / PowerMode",
   "direct.join_missing": "Join-Entität nicht zugeordnet. Zonen-Verbindungsmodus in HA aktivieren oder im Editor zuordnen.",

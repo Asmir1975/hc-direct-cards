@@ -63,7 +63,7 @@ The verified entity contract is `homeconnect_ws`.
 2. Under Settings → Dashboards → Resources add it as a JavaScript module:
 
    ```text
-   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.0.0
+   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.0.1
    ```
 
 3. Fully reload the browser.
@@ -110,10 +110,13 @@ The physical layout is confirmed for the Siemens EX851LYV5E:
 100    400
 ```
 
-Join shows one joint rectangle per side. powerMove shows two vertical lines per side and
-reads rear, middle and front from the existing settings. The display follows the
-reported Join and mode state, not just the click. Zone values are read-only, and tapping
-one opens the entity details.
+Join shows one joint rectangle per side. powerMove shows two parallel vertical lines per side.
+The display follows what the hob reports, not just the click. Join shows when the Join
+setting is on, or when the diagnostic sensor "Join zone" reports joined zones. That sensor
+needs an integration version after 1.13.0 and also reacts when the zones are joined at the
+hob itself. A zone shows its power level only while its operation state is running, and
+"Off" otherwise, because the hob can keep the last level after it went off. Remaining time
+shows only above zero. Zone values are read-only, and tapping one opens the entity details.
 
 Other hob layouts are not verified. The global Join and mode entities give no reliable
 way to show left and right modes independently. The card adds no zone power control and

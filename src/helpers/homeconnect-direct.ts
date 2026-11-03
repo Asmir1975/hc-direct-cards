@@ -373,6 +373,9 @@ const specific: Record<ApplianceKind, Record<string, string[]>> = {
     "bridge_mode_entity": [
       "select_hob_bridge_zone_mode"
     ],
+    "join_zone_entity": [
+      "binary_sensor_hob_join_zone"
+    ],
     "hob_mode_entity": [
       "select_program"
     ],

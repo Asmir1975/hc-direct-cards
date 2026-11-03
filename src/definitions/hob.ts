@@ -18,6 +18,7 @@ export const hobDefinition: ApplianceDefinition = {
   fields: [
     ...commonFields.filter(f => ["entity","status_entity","operating_state_entity","connection_entity"].includes(f.key)),
     ...hobZoneFields,
+    { key: "join_zone_entity", label: "Join zone", section: "status", kind: "status", domains: ["binary_sensor"], aliases: ["join zone", "zonen verbunden"] },
     { key: "bridge_mode_entity", label: "varioInduction (join zones)", section: "program", kind: "select", domains: ["select"] },
     { key: "hob_mode_entity", label: "Power mode", section: "program", kind: "select", domains: ["select"] },
 

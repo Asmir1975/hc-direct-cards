@@ -13,7 +13,7 @@ import type { ProgramNameMap } from "../types/config";
 export interface ControlEventDetail { entity: HassEntity; action: "toggle" | "select" | "number" | "press" | "brightness" | "fan"; value?: string | number; }
 
 export class EntityControl extends LitElement {
-  static properties = { hass: { attribute: false }, entity: { attribute: false }, valueLabels: { attribute: false }, label: {}, kind: {}, disabled: { type: Boolean }, busy: { type: Boolean }, stepSeconds: { type: Number }, hint: {}, _pending: { state: true } };
+  static properties = { hass: { attribute: false }, entity: { attribute: false }, valueLabels: { attribute: false }, label: {}, kind: {}, disabled: { type: Boolean }, busy: { type: Boolean }, compact: { type: Boolean }, stepSeconds: { type: Number }, hint: {}, _pending: { state: true } };
   hass?: HomeAssistant;
   entity?: HassEntity;
   valueLabels: ProgramNameMap = {};
@@ -22,6 +22,8 @@ export class EntityControl extends LitElement {
   disabled = false;
   busy = false;
   stepSeconds = 0;
+  /** A select without its label, for tight rows (the label stays as tooltip and accessible name). */
+  compact = false;
   hint = "";
   private _pending?: number;
   private _sendTimer?: ReturnType<typeof setTimeout>;
@@ -36,6 +38,7 @@ export class EntityControl extends LitElement {
     .status-line { width: 100%; padding: 0; border: 0; color: inherit; background: transparent; text-align: left; font: inherit; cursor: pointer; }
     .status-line:hover .value { color: var(--hc-accent); }
     select { max-width: 62%; min-width: 120px; height: 37px; padding: 0 30px 0 11px; color: var(--primary-text-color); background: var(--card-background-color); border: 1px solid color-mix(in srgb, var(--divider-color), var(--primary-text-color) 8%); border-radius: 11px; font: inherit; font-size: 13px; transition: border-color 150ms ease, box-shadow 150ms ease; }
+    select.compact { flex: none; width: 100%; max-width: none; min-width: 0; }
     select:hover:not(:disabled) { border-color: color-mix(in srgb, var(--hc-accent), var(--divider-color) 45%); }
     .switch { position: relative; width: 42px; height: 24px; flex: none; border: 0; border-radius: 999px; padding: 2px; background: var(--switch-unchecked-track-color, var(--disabled-color)); cursor: pointer; transition: background 160ms ease; }
     .switch::after { content: ""; display: block; width: 20px; height: 20px; border-radius: 50%; background: var(--switch-unchecked-button-color, #fff); box-shadow: 0 1px 3px #0004; transition: transform 160ms ease; }
@@ -115,7 +118,10 @@ export class EntityControl extends LitElement {
     if (this.kind === "select") {
       const options = this.entity.attributes.options || [];
       const choices = options.includes(this.entity.state) || !isAvailable(this.entity) ? options : [this.entity.state, ...options];
-      return html`<div class="line ${unavailable ? "unavailable" : ""}"><label class="label" for="select">${this.label}</label><select id="select" ?disabled=${blocked} @change=${(ev: Event) => this.emit("select", (ev.target as HTMLSelectElement).value)}>${!isAvailable(this.entity) ? html`<option value="" disabled selected>${displayState(this.hass, this.entity)}</option>` : nothing}${choices.map((option) => html`<option .value=${option} ?selected=${option === this.entity?.state}>${customProgramName(option, this.valueLabels) || displayState(this.hass!, { ...this.entity!, state: option })}</option>`)}</select></div>`;
+      const items = html`${!isAvailable(this.entity) ? html`<option value="" disabled selected>${displayState(this.hass, this.entity)}</option>` : nothing}${choices.map((option) => html`<option .value=${option} ?selected=${option === this.entity?.state}>${customProgramName(option, this.valueLabels) || displayState(this.hass!, { ...this.entity!, state: option })}</option>`)}`;
+      const change = (ev: Event) => this.emit("select", (ev.target as HTMLSelectElement).value);
+      if (this.compact) return html`<select class="compact ${unavailable ? "unavailable" : ""}" aria-label=${this.label} title=${this.label} ?disabled=${blocked} @change=${change}>${items}</select>`;
+      return html`<div class="line ${unavailable ? "unavailable" : ""}"><label class="label" for="select">${this.label}</label><select id="select" ?disabled=${blocked} @change=${change}>${items}</select></div>`;
     }
     if (this.kind === "number") {
       const spec = numberSpec(this.entity, this.stepSeconds);

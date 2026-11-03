@@ -130,6 +130,7 @@ export interface DryerCardConfig extends BaseApplianceCardConfig {
 
 export interface HobCardConfig extends BaseApplianceCardConfig {
   bridge_mode_entity?: string;
+  join_zone_entity?: string;
   hob_mode_entity?: string;
   alarm_entity?: string;
   automatic_timer_entity?: string;

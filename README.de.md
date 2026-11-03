@@ -64,7 +64,7 @@ Der geprüfte Entity-Vertrag heißt `homeconnect_ws`.
 2. Unter Einstellungen → Dashboards → Ressourcen als JavaScript-Modul eintragen:
 
    ```text
-   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.0.0
+   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.0.1
    ```
 
 3. Browser vollständig neu laden.
@@ -111,10 +111,14 @@ Die physische Anordnung ist für das Siemens EX851LYV5E bestätigt:
 100    400
 ```
 
-Join zeigt ein gemeinsames Rechteck pro Seite. powerMove zeigt zwei senkrechte Linien pro
-Seite und liest hinten, Mitte und vorne aus den vorhandenen Einstellungen. Die Darstellung
-folgt dem gemeldeten Join- und Modus-Zustand, nicht dem bloßen Klick. Zonenwerte sind nur
-lesbar, ein Tipp darauf öffnet die Entity-Details.
+Join zeigt ein gemeinsames Rechteck pro Seite. powerMove zeigt zwei parallele senkrechte Linien pro
+Seite. Die Darstellung folgt dem, was das Kochfeld meldet, nicht dem bloßen Klick. Join
+erscheint, wenn die Einstellung Join an ist oder der Diagnosesensor „Zonen verbunden“
+verbundene Zonen meldet. Der Sensor braucht eine Integrationsversion nach 1.13.0 und reagiert
+auch, wenn die Zonen am Kochfeld selbst verbunden werden. Eine Zone zeigt ihre Stufe nur,
+solange ihr Betriebszustand läuft, sonst „Aus“, weil das Kochfeld die letzte Stufe nach dem
+Ausschalten behalten kann. Die Restzeit steht nur über null. Zonenwerte sind nur lesbar, ein
+Tipp darauf öffnet die Entity-Details.
 
 Andere Kochfeldanordnungen sind nicht verifiziert. Die globalen Join- und Modus-Entitäten
 erlauben keine belegte, unabhängige Darstellung von linkem und rechtem Modus. Die Karte
