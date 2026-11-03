@@ -152,9 +152,9 @@ export abstract class BaseApplianceEditor extends LitElement {
   }
 
   private renderDeviceField() {
-    const models = { coffee: "CoffeeMaker", oven: "Oven", dishwasher: "Dishwasher", hood: "Hood", hob: "Hob" };
+    const models: Partial<Record<typeof this.definition.kind, string>> = { coffee: "CoffeeMaker", oven: "Oven", dishwasher: "Dishwasher", hood: "Hood", hob: "Hob" };
     return html`<div class="field"><label>${translate(this.hass,"editor.device","Appliance")}</label><ha-selector
-      .hass=${this.hass} .selector=${{device:{filter:[{integration:"homeconnect_ws",model:models[this.definition.kind]}]}}}
+      .hass=${this.hass} .selector=${{device:{filter:[models[this.definition.kind] ? {integration:"homeconnect_ws",model:models[this.definition.kind]} : {integration:"homeconnect_ws"}]}}}
       .value=${this._config?.device_id || ""}
       @value-changed=${(ev:CustomEvent<{value?:string}>)=>this.changeDevice(ev.detail.value)}></ha-selector></div>`;
   }

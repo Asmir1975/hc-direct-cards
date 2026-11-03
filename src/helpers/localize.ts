@@ -95,7 +95,7 @@ const de: Record<string, string> = {
   power: "Ein/Aus", progress: "Programmfortschritt", running: "Aktives Programm", paused: "Pausiert", ready: "Bereit",
   appliance_status: "Gerätestatus", working: "Wird ausgeführt…", not_configured: "Nicht konfiguriert",
   unavailable: "Nicht verfügbar", unknown: "Unbekannt",
-  "device.dishwasher": "Spülmaschine", "device.oven": "Backofen", "device.coffee": "Kaffeemaschine",
+  "device.dishwasher": "Spülmaschine", "device.oven": "Backofen", "device.coffee": "Kaffeemaschine", "device.dryer": "Trockner",
   "field.entity": "Alternative: Anker-Entität", "field.power_entity": "Ein/Aus", "field.status_entity": "Status",
   "field.operating_state_entity": "Betriebszustand", "field.selected_program_entity": "Ausgewähltes Programm",
   "field.active_program_entity": "Aktives Programm", "field.progress_entity": "Programmfortschritt",

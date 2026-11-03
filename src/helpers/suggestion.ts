@@ -5,8 +5,9 @@ const KIND_TERMS: Record<ApplianceKind, string[]> = {
   dishwasher: ["dishwasher", "dish care", "dishcare", "geschirrspuler", "spulmaschine"],
   oven: ["oven", "backofen", "herd"],
   coffee: ["coffee maker", "coffeemaker", "coffee machine", "kaffeemaschine", "kaffeevollautomat", "espresso"],
-  hood: ["hood", "dunstabzug", "haube", "extractor"],
-  hob: ["hob", "kochfeld", "cooktop"],
+  dryer: ["dryer", "tumble dryer", "tumbledryer", "trockner", "waschetrockner"],
+  hood: ["hood", "extractor", "dunstabzug", "haube", "abzugshaube"],
+  hob: ["hob", "cooktop", "induction", "kochfeld", "induktion"],
 };
 
 function normalize(value: string): string {

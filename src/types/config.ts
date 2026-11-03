@@ -1,4 +1,4 @@
-export type ApplianceKind = "dishwasher" | "oven" | "coffee" | "hood" | "hob";
+export type ApplianceKind = "dishwasher" | "oven" | "coffee" | "dryer" | "hob" | "hood";
 export type ProgramNameMap = Record<string, string>;
 
 export interface BaseApplianceCardConfig {
@@ -52,6 +52,11 @@ export interface DishwasherCardConfig extends BaseApplianceCardConfig {
   filter_entity?: string;
   aquastop_entity?: string;
   heater_scale_entity?: string;
+  extra_dry_entity?: string;
+  intensive_zone_entity?: string;
+  speed_on_demand_entity?: string;
+  smart_start_entity?: string;
+  auto_smart_start_entity?: string;
 }
 
 export interface OvenCardConfig extends BaseApplianceCardConfig {
@@ -65,6 +70,7 @@ export interface OvenCardConfig extends BaseApplianceCardConfig {
   door_entity?: string;
   water_tank_entity?: string;
   rapid_preheat_entity?: string;
+  cavity_light_entity?: string;
   alarm_entity?: string;
   child_lock_entity?: string;
   display_brightness_entity?: string;
@@ -98,12 +104,60 @@ export interface CoffeeCardConfig extends BaseApplianceCardConfig {
   child_lock_entity?: string;
 }
 
-export interface HoodCardConfig extends BaseApplianceCardConfig {}
-export interface HobCardConfig extends BaseApplianceCardConfig {}
+export interface DryerCardConfig extends BaseApplianceCardConfig {
+  phase_entity?: string;
+  finish_at_entity?: string;
+  drying_target_entity?: string;
+  duration_entity?: string;
+  speed_perfect_entity?: string;
+  hygiene_entity?: string;
+  half_load_entity?: string;
+  gentle_entity?: string;
+  wrinkle_guard_entity?: string;
+  silent_entity?: string;
+  door_entity?: string;
+  reload_entity?: string;
+  condensate_entity?: string;
+  lint_filter_entity?: string;
+  care_entity?: string;
+  load_recommendation_entity?: string;
+  drum_light_entity?: string;
+  door_light_entity?: string;
+  signal_volume_entity?: string;
+  brightness_entity?: string;
+  auto_power_off_entity?: string;
+}
+
+export interface HobCardConfig extends BaseApplianceCardConfig {
+  bridge_mode_entity?: string;
+  hob_mode_entity?: string;
+  alarm_entity?: string;
+  automatic_timer_entity?: string;
+  child_lock_entity?: string;
+}
+
+export interface HoodCardConfig extends BaseApplianceCardConfig {
+  fan_entity?: string;
+  hood_level_entity?: string;
+  working_light_entity?: string;
+  ambient_light_entity?: string;
+  grease_filter_entity?: string;
+  carbon_filter_entity?: string;
+  delayed_shutoff_entity?: string;
+  interval_on_entity?: string;
+  interval_off_entity?: string;
+  fan_profile_entity?: string;
+  fan_startup_entity?: string;
+  fan_shutdown_entity?: string;
+  automatic_sensitivity_entity?: string;
+  reset_grease_entity?: string;
+  reset_carbon_entity?: string;
+}
 
 export type ApplianceCardConfig =
   | DishwasherCardConfig
   | OvenCardConfig
   | CoffeeCardConfig
-  | HoodCardConfig
-  | HobCardConfig;
+  | DryerCardConfig
+  | HobCardConfig
+  | HoodCardConfig;

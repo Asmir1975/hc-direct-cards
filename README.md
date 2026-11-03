@@ -5,12 +5,12 @@
 <a href="https://github.com/Asmir1975/hc-direct-cards/releases/latest"><img src="https://img.shields.io/github/v/release/Asmir1975/hc-direct-cards?color=176b70&label=version" alt="Latest release"></a>
 <a href="https://github.com/Asmir1975/hc-direct-cards/releases"><img src="https://img.shields.io/github/downloads/Asmir1975/hc-direct-cards/total?color=b9794a&label=downloads" alt="Downloads"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-176b70" alt="MIT license"></a>
-<img src="https://img.shields.io/badge/cards-5-b9794a" alt="5 cards">
+<img src="https://img.shields.io/badge/cards-6-b9794a" alt="6 cards">
 <img src="https://img.shields.io/badge/TypeScript-Lit-3178c6" alt="TypeScript and Lit">
 </p>
 
 HC Direct Cards gives Home Assistant one card each for a hob, extractor hood, oven,
-dishwasher and coffee machine. It is made by
+dishwasher, coffee machine and dryer. It is made by
 [Asmir1975](https://github.com/Asmir1975) for the
 [Home Connect Direct](https://github.com/Asmir1975/homeconnect_direct) integration.
 
@@ -18,18 +18,19 @@ The cards are an optional companion to the integration. They show what it provid
 and send the values it expects.
 
 Pick the appliance in the visual editor and the card assigns the matching entities
-for you. The main view holds the everyday controls, and further values and settings
-fold out below.
+for you. The header shows the appliance with its state, program and phase. Tap the card
+to open the controls. Further values and settings sit in sections below.
 
 Target temperature, duration and delayed start are set with − and + buttons. Time
 values move in minutes, temperatures in steps of 5.
 
 Oven and dishwasher show how long a program has run, how much time is left and when it
 ends. Appliance messages such as "insert food now" or "program finished" appear at the
-top of the card, also when you use the appliance at the device. The status chip turns
-green when a program has finished, and the current phase shows next to the program name.
+top of the card, also when you use the appliance at the device. The state text in the
+header turns green when a program has finished, orange when the appliance needs action
+and red on an error. The current phase shows next to the program name.
 
-## The five cards
+## The six cards
 
 | Appliance | Card type | What it shows |
 |---|---|---|
@@ -38,6 +39,7 @@ green when a program has finished, and the current phase shows next to the progr
 | Oven | `custom:hc-direct-oven-card` | Program, target temperature, duration and available extras |
 | Dishwasher | `custom:hc-direct-dishwasher-card` | Program, start/cancel, remaining time and messages |
 | Coffee machine | `custom:hc-direct-coffee-card` | Beverage, amount, aromaSelect, strength and available extras |
+| Dryer | `custom:hc-direct-dryer-card` | Program, options, light and maintenance. Tested with made-up data only |
 
 A function appears only when a matching entity is assigned. What an appliance can do
 is up to the integration.
@@ -61,7 +63,7 @@ The verified entity contract is `homeconnect_ws`.
 2. Under Settings → Dashboards → Resources add it as a JavaScript module:
 
    ```text
-   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.2.0
+   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.0.0
    ```
 
 3. Fully reload the browser.
@@ -73,9 +75,8 @@ The verified entity contract is `homeconnect_ws`.
 
 5. Select the appliance in the visual editor.
 
-Load only one version of this card package at a time. Existing `hc-direct` card types
-stay valid. For existing cards, use the recommended size on the Layout tab or choose
-12 columns.
+Load only one copy of this package. It can run next to the original Home Connect Card
+Pack, because the card types and element names differ.
 
 ### HACS
 
@@ -120,8 +121,8 @@ no remote start for the hob.
 
 ## Good to know
 
-Start delay: "Start in" moves in 15 minute steps and sits in the main view of the oven
-and the dishwasher. Not every oven program accepts a delay. On a Siemens HB774G1B1,
+Start delay: "Start in" moves in 15 minute steps and sits in the program section of the
+oven and the dishwasher. Not every oven program accepts a delay. On a Siemens HB774G1B1,
 programs such as air fry reject it and the integration answers "This program does not
 support a delayed start." If you start such a program anyway, the oven ignores the delay
 and starts at once.
@@ -140,6 +141,7 @@ switches by default.
 - Some entities, for example the dishwasher's Smart Start switches, are disabled by
   default in the integration. Enable them in Home Assistant and the cards show them.
 - The hob layout is confirmed for the Siemens EX851LYV5E only.
+- The dryer card has only been tested with made-up data. The author has no dryer.
 
 ## Credits and license
 
