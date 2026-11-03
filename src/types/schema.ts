@@ -1,6 +1,6 @@
 import type { ApplianceKind } from "./config";
 
-export type ControlKind = "select" | "number" | "toggle" | "status" | "light" | "button" | "fan";
+export type ControlKind = "select" | "number" | "toggle" | "status" | "light" | "fan" | "button";
 export type SectionId = "program" | "options" | "status" | "settings";
 
 export interface FieldDefinition {
@@ -12,6 +12,7 @@ export interface FieldDefinition {
   aliases?: string[];
   warning?: boolean;
   warningStates?: string[];
+  /** Numeric sensors warn only at or below this value (a countdown such as the machine care reminder). */
   warningBelow?: number;
   prominent?: boolean;
   allowWhileActive?: boolean;

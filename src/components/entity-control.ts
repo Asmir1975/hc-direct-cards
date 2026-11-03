@@ -1,13 +1,13 @@
 import { LitElement, css, html, nothing } from "lit";
 import type { ControlKind } from "../types/schema";
 import type { HassEntity, HomeAssistant } from "../types/home-assistant";
-import { displayState, isAvailable, isOn, numericState } from "../helpers/formatting";
+import { displayState, isAvailable, isOn } from "../helpers/formatting";
+import { formatNumber, numberSpec, stepNumber } from "../helpers/numbers";
+import { translate } from "../helpers/localize";
 import { registerElement } from "../helpers/register";
 import { fireMoreInfo } from "../helpers/actions";
 import { isControlAvailable, isReadonly } from "../helpers/controls";
 import { customProgramName } from "../helpers/programs";
-import { formatNumber, numberSpec, stepNumber } from "../helpers/numbers";
-import { translate } from "../helpers/localize";
 import type { ProgramNameMap } from "../types/config";
 
 export interface ControlEventDetail { entity: HassEntity; action: "toggle" | "select" | "number" | "press" | "brightness" | "fan"; value?: string | number; }
@@ -31,17 +31,17 @@ export class EntityControl extends LitElement {
     :host { display: block; min-width: 0; }
     .control { min-height: 48px; display: grid; gap: 6px; }
     .line { min-height: 45px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .label { flex:1; overflow-wrap:anywhere; min-width: 0; color: var(--secondary-text-color); font-size: 12px; font-weight: 520; }
+    .label { min-width: 0; overflow-wrap: anywhere; color: var(--secondary-text-color); font-size: 12px; font-weight: 520; }
     .value { padding: 4px 0; color: var(--primary-text-color); font-size: 13px; font-weight: 600; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .status-line { width: 100%; padding: 0; border: 0; color: inherit; background: transparent; text-align: left; font: inherit; cursor: pointer; }
     .status-line:hover .value { color: var(--hc-accent); }
-    select { flex:0 1 62%; width:62%; max-width:62%; min-width:0; height: 37px; padding: 0 30px 0 11px; color: var(--primary-text-color); background: var(--card-background-color); border: 1px solid color-mix(in srgb, var(--divider-color), var(--primary-text-color) 8%); border-radius: 11px; font: inherit; font-size: 13px; transition: border-color 150ms ease, box-shadow 150ms ease; }
+    select { max-width: 62%; min-width: 120px; height: 37px; padding: 0 30px 0 11px; color: var(--primary-text-color); background: var(--card-background-color); border: 1px solid color-mix(in srgb, var(--divider-color), var(--primary-text-color) 8%); border-radius: 11px; font: inherit; font-size: 13px; transition: border-color 150ms ease, box-shadow 150ms ease; }
     select:hover:not(:disabled) { border-color: color-mix(in srgb, var(--hc-accent), var(--divider-color) 45%); }
     .switch { position: relative; width: 42px; height: 24px; flex: none; border: 0; border-radius: 999px; padding: 2px; background: var(--switch-unchecked-track-color, var(--disabled-color)); cursor: pointer; transition: background 160ms ease; }
     .switch::after { content: ""; display: block; width: 20px; height: 20px; border-radius: 50%; background: var(--switch-unchecked-button-color, #fff); box-shadow: 0 1px 3px #0004; transition: transform 160ms ease; }
     .switch.on { background: var(--hc-accent); }
     .switch.on::after { transform: translateX(18px); }
-    input[type=range] { width: 100%; height: 18px; accent-color: var(--hc-accent); cursor: pointer; }
+    input[type=range] { width: 100%; margin: 0; height: 18px; accent-color: var(--hc-accent); cursor: pointer; }
     .number-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 12px; }
     .number-value { font-weight: 650; font-variant-numeric: tabular-nums; }
     .stepper { flex: none; display: inline-flex; align-items: stretch; height: 37px; border: 1px solid color-mix(in srgb, var(--divider-color), var(--primary-text-color) 8%); border-radius: 11px; overflow: hidden; background: var(--card-background-color); }
@@ -100,10 +100,10 @@ export class EntityControl extends LitElement {
       const fan = this.kind === "fan";
       const modes = this.entity.attributes.supported_color_modes as string[] | undefined;
       const dimmable = fan ? (Number(this.entity.attributes.supported_features || 0) & 1) !== 0
-        : !!modes?.some(mode => !["onoff", "unknown"].includes(mode));
+        : !!modes?.some((mode) => !["onoff", "unknown"].includes(mode));
       const percentage = fan ? Number(this.entity.attributes.percentage ?? 0)
         : this.entity.state === "off" ? 0 : Math.round(Number(this.entity.attributes.brightness ?? 255) / 255 * 100);
-      return html`<div class="control">
+      return html`<div class="control ${unavailable ? "unavailable" : ""}">
         <div class="line"><span class="label">${this.label}</span><button class="switch ${isOn(this.entity) ? "on" : ""}" type="button" role="switch" aria-checked=${String(isOn(this.entity))} aria-label=${this.label} ?disabled=${blocked} @click=${() => this.emit("toggle")}></button></div>
         ${dimmable ? html`<label class="number-head">${percentage}%<input aria-label=${this.label + " %"} type="range" min="0" max="100" step=${fan ? Number(this.entity.attributes.percentage_step || 1) : 1} .value=${String(percentage)} ?disabled=${blocked} @change=${(ev: Event) => this.emit(fan ? "fan" : "brightness", Number((ev.target as HTMLInputElement).value))}></label>` : nothing}
       </div>`;

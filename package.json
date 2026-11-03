@@ -1,7 +1,7 @@
 {
   "name": "hc-direct-cards",
-  "version": "1.2.0",
-  "description": "Five Home Assistant cards for Home Connect Direct",
+  "version": "1.0.0",
+  "description": "Six Home Assistant cards for Home Connect Direct",
   "license": "MIT",
   "author": "Asmir1975",
   "homepage": "https://github.com/Asmir1975/hc-direct-cards",

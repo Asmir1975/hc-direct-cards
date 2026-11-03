@@ -1,5 +1,5 @@
 name: Bug report
-description: Problem with one of the five cards
+description: Problem with one of the six cards
 body:
   - type: input
     id: versions

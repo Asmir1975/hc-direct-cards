@@ -5,18 +5,21 @@ import type { ApplianceCardConfig } from "../types/config";
 import type { HomeAssistant, HassEntity } from "../types/home-assistant";
 import type { ApplianceDefinition, FieldDefinition, SectionId } from "../types/schema";
 import { configuredEntityIds, relevantStatesChanged, stateFor } from "../helpers/entity";
-import { canonicalState, deriveMode, displayState, phaseText, stateTone, isOn, isActiveMode, isAvailable, isWarningActive, progressValue, resolveAccentColor } from "../helpers/formatting";
+import { canonicalState, deriveMode, displayState, isActiveMode, isAvailable, isOn, isWarningActive, phaseText, progressValue, resolveAccentColor, stateTone } from "../helpers/formatting";
 import { discoverEntities, discoveryKey } from "../helpers/registry";
+import { formatDuration } from "../helpers/numbers";
+import { clockText, summarizeTimes, type TimeSummary } from "../helpers/times";
+import { messageNotice } from "../helpers/notices";
 import { isReadonly, showQuantityField } from "../helpers/controls";
-import { setBrightness, setFanSpeed, pressEntity, selectOption, setNumber, toggleEntity } from "../helpers/services";
+import { pressEntity, selectOption, setBrightness, setFanSpeed, setNumber, toggleEntity } from "../helpers/services";
 import { fieldLabel, translate } from "../helpers/localize";
 import type { ControlEventDetail } from "../components/entity-control";
 import type { ApplianceAction } from "../components/action-buttons";
 import { fireMoreInfo } from "../helpers/actions";
 import { displayProgramName } from "../helpers/programs";
-import { formatDuration } from "../helpers/numbers";
-import { clockText, summarizeTimes, type TimeSummary } from "../helpers/times";
-import { messageNotice } from "../helpers/notices";
+import "../components/appliance-header";
+import "../components/progress-display";
+import "../components/status-chip";
 import "../components/entity-control";
 import "../components/expandable-section";
 import "../components/action-buttons";
@@ -53,41 +56,32 @@ export abstract class BaseApplianceCard extends LitElement {
   protected abstract definition: ApplianceDefinition;
 
   static styles = [commonCardStyles, css`
-    .section-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:10px 20px; }
-    .entity-slot { min-width:0; border-bottom:1px solid var(--divider-color); padding-block:6px; }
-    .primary-grid { display:grid; gap:12px; }
-    .primary-grid hcd-entity-control { padding:8px 0; border-bottom:1px solid var(--divider-color); }
-    .zones { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
-    .zone-pair { display:flex; flex-direction:column; gap:10px; min-width:0; }
-    .zone-pair.combined { gap:0; border:2px solid var(--hc-accent); border-radius:16px; overflow:hidden; background:var(--secondary-background-color); }
-    .pair-label { padding:8px 12px; font-size:12px; font-weight:650; color:var(--hc-accent); border-bottom:1px solid var(--divider-color); }
-    .zone-pair.combined .zone { border-radius:0; border:0; flex:1; }
-    .zone-pair.move { border-top:0; border-bottom:0; border-radius:0; background:transparent; }
-    .zone-pair.move .pair-label { border:0; }
-    .move-levels { display:flex; flex-direction:column; gap:22px; padding:14px 12px 22px; }
-    .move-level { display:flex; align-items:center; justify-content:space-between; gap:8px; }
-    .move-level span { font-size:12px; color:var(--secondary-text-color); }
-    .move-level strong { font-size:26px; font-weight:650; }
-    .zone-pair.move .zone { padding:8px 12px; background:transparent; }
-    .zone-pair.move .zone-power { font-size:16px; margin:4px 0; }
-    .zone-pair.combined .zone.hot { box-shadow:inset 3px 0 var(--warning-color,#d57825); }
-    .zone { width:100%; min-width:0; text-align:left; color:inherit; background:var(--secondary-background-color); border:1px solid var(--divider-color); border-radius:14px; padding:14px; cursor:pointer; }
-    .zone.active { border-color:var(--hc-accent); background:color-mix(in srgb,var(--hc-accent),transparent 94%); }
-    .zone.hot { border-color:var(--warning-color,#d57825); }
-    .zone-title { display:flex; justify-content:space-between; gap:8px; font-size:12px; font-weight:650; }
-    .zone-power { display:block; margin:16px 0 8px; font-size:30px; font-weight:650; font-variant-numeric:tabular-nums; }
-    .zone-meta { display:block; font-size:12px; color:var(--secondary-text-color); line-height:1.7; }
-    .hot-label { color:var(--warning-color,#d57825); font-size:12px; }
-    .stage-buttons { display:flex; gap:6px; flex-wrap:wrap; }
-    .stage { min-width:44px; min-height:44px; border:1px solid var(--divider-color); border-radius:10px; padding:8px 12px; background:var(--card-background-color); color:var(--primary-text-color); font:inherit; cursor:pointer; }
-    .stage.selected { background:var(--hc-accent); color:white; border-color:var(--hc-accent); }
-    .stage:disabled { opacity:.45; cursor:not-allowed; }
-    .hood-panel { padding:18px; border-radius:14px; border:1px solid var(--divider-color); background:var(--secondary-background-color); display:grid; gap:16px; }
-    .section-label { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary-text-color); }
-    .hood-level { font-size:32px; font-weight:650; letter-spacing:-.04em; }
-    .inline-control { padding:4px 0; }
-    .read-only-note { margin:8px 0 0; color:var(--secondary-text-color); font-size:11px; }
-    @container (max-width:420px) { .section-grid { grid-template-columns:1fr; } }
+    .section-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 18px; }
+    .entity-slot { min-width: 0; border-bottom: 1px solid color-mix(in srgb, var(--divider-color), transparent 45%); }
+    .entity-slot:nth-last-child(-n+2) { border-bottom-color: transparent; }
+    .program-grid .entity-slot:first-child { grid-column: 1 / -1; }
+    .power-row { padding: 2px 11px; border: 1px solid color-mix(in srgb, var(--hc-accent), transparent 82%); border-radius: 13px; background: color-mix(in srgb, var(--hc-accent), transparent 94%); }
+    .program-focus { padding: 2px 0 5px; }
+    .activity { display: grid; gap: 10px; padding: 12px; border: 1px solid color-mix(in srgb, var(--hc-accent), transparent 80%); border-radius: 14px; background: linear-gradient(135deg, color-mix(in srgb, var(--hc-accent), transparent 91%), color-mix(in srgb, var(--secondary-background-color), transparent 24%)); }
+    .activity-top { display: flex; align-items: end; justify-content: space-between; gap: 12px; }
+    .activity-copy { min-width: 0; }
+    .activity-label { margin-bottom: 3px; color: var(--secondary-text-color); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .activity-program { overflow: hidden; color: var(--primary-text-color); font-size: 15px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+    .activity-time { flex: none; padding: 5px 8px; border-radius: 9px; color: var(--hc-accent); background: color-mix(in srgb, var(--hc-accent), transparent 88%); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .times { display: flex; flex-wrap: wrap; gap: 6px 8px; }
+    .time-chip { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--secondary-text-color); background: color-mix(in srgb, var(--hc-accent) 14%, transparent); }
+    .time-chip b { color: var(--primary-text-color); font-weight: 650; }
+    .message-strip { padding: 0 16px 12px; }
+    .notice { font-size: 12px; padding: 8px 10px; border-left: 3px solid var(--warning-color, #d18420); background: color-mix(in srgb, var(--warning-color, #d18420), transparent 94%); overflow-wrap: anywhere; }
+    .notice.info { border-left-color: var(--info-color, #3d8bd9); background: color-mix(in srgb, var(--info-color, #3d8bd9), transparent 92%); }
+    .notice.success { border-left-color: var(--success-color, #43a047); background: color-mix(in srgb, var(--success-color, #43a047), transparent 92%); }
+    .notice ha-icon { --mdc-icon-size: 16px; margin-right: 6px; vertical-align: -3px; }
+    @container (max-width: 620px) {
+      .section-grid { grid-template-columns: 1fr; }
+      .program-grid .entity-slot:first-child { grid-column: auto; }
+      .entity-slot:nth-last-child(-n+2) { border-bottom-color: color-mix(in srgb, var(--divider-color), transparent 45%); }
+      .entity-slot:last-child { border-bottom-color: transparent; }
+    }
   `];
 
   setConfig(config: ApplianceCardConfig): void {
@@ -101,28 +95,28 @@ export abstract class BaseApplianceCard extends LitElement {
   }
 
   protected updated(): void {
-    // Minimal anchor-only YAML also works without opening the visual editor.
+    // A device or a single anchor entity is enough: the entities are assigned here, without opening the editor.
     const anchor = this._config?.entity || "";
     const selection = discoveryKey(this._config);
     if (!this.hass || !selection || this._config?.auto_detect === false || this._discovering || (selection === this._discoveryAnchor && this._registrySnapshot === this.hass.entities)) return;
-    if (!this._config?.device_id && Object.keys(this._config!).some(key => key.endsWith("_entity"))) return;
+    if (!this._config?.device_id && Object.keys(this._config!).some((key) => key.endsWith("_entity"))) return;
     this._discoveryAnchor = selection;
     this._registrySnapshot = this.hass.entities;
     const manual = this._manualConfig || this._config!;
     this._discovering = true;
-    void discoverEntities(this.hass,anchor,this.definition,manual).then(suggestions=>{
+    void discoverEntities(this.hass, anchor, this.definition, manual).then((suggestions) => {
       if (discoveryKey(this._config) !== selection) return;
       const latest = this._manualConfig || manual;
-      const safe=Object.fromEntries(Object.entries(suggestions).filter(([key])=>!latest[key]));
-      this._config={...latest,...safe};
-    }).catch(error=>{
-      this._error=error instanceof Error ? error.message : "Automatic discovery failed.";
-    }).finally(()=>{this._discovering=false;this.requestUpdate();});
+      const safe = Object.fromEntries(Object.entries(suggestions).filter(([key]) => !latest[key]));
+      this._config = { ...latest, ...safe };
+    }).catch((error) => {
+      this._error = error instanceof Error ? error.message : "Automatic discovery failed.";
+    }).finally(() => { this._discovering = false; this.requestUpdate(); });
   }
 
-  getCardSize(): number { return this._expanded ? 10 : this.definition.kind === "hob" || this.definition.kind === "hood" ? 6 : 7; }
+  getCardSize(): number { return this._expanded ? 6 : 1; }
 
-  getGridOptions() { return { columns: 12, min_columns: 3, rows: "auto" }; }
+  getGridOptions() { return { columns: 6, min_columns: 3 }; }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
@@ -135,14 +129,14 @@ export abstract class BaseApplianceCard extends LitElement {
     const before = changed.get("hass") as HomeAssistant | undefined;
     if (this._config.device_id && (before?.entities !== this.hass?.entities
       || before?.devices?.[this._config.device_id] !== this.hass?.devices?.[this._config.device_id])) return true;
-    return relevantStatesChanged(before, this.hass, configuredEntityIds(this._config));
+    return relevantStatesChanged(changed.get("hass") as HomeAssistant | undefined, this.hass, configuredEntityIds(this._config));
   }
 
   protected getState(key: string): HassEntity | undefined {
     return this._config && stateFor(this.hass, this._config, key);
   }
 
-  protected toggleExpanded(): void {
+  private toggleExpanded(): void {
     this._expandedByUser = true;
     this._expanded = !this._expanded;
   }
@@ -156,7 +150,7 @@ export abstract class BaseApplianceCard extends LitElement {
     return undefined;
   }
 
-  protected showMoreInfo(): void {
+  private showMoreInfo(): void {
     const entityId = this.infoEntityId();
     if (!entityId) return;
     fireMoreInfo(this, entityId);
@@ -168,57 +162,21 @@ export abstract class BaseApplianceCard extends LitElement {
     this._confirmingId = "";
   }
 
-  protected supportsField(key: string): boolean {
+  private supportsField(key: string): boolean {
     return this.definition.fields.some((field) => field.key === key);
   }
 
-  protected isOffline(): boolean {
-    const connection = this.getState("connection_entity");
-    return !!connection && !isOn(connection);
-  }
+  /** Cards that draw some fields themselves list their keys here, so the generic sections skip them. */
+  protected ownFieldKeys(): string[] { return []; }
 
-  protected primaryFieldKeys(): string[] {
-    const common = ["selected_program_entity"];
-    const keys: Partial<Record<string, string[]>> = {
-      coffee: [...common, "fill_quantity_select_entity", "fill_quantity_entity", "bean_amount_entity", "aroma_entity"],
-      oven: [...common, "target_temperature_entity", "duration_entity", "start_in_entity"],
-      dishwasher: [...common, "start_in_entity"],
-      hood: ["hood_level_entity", "fan_entity", "working_light_entity", "ambient_light_entity"],
-      hob: [],
-    };
-    return keys[this.definition.kind] || [];
-  }
-
-  /** A start delay moves in 15 minute steps; the appliance accepts any value (own device logs). */
-  protected stepFor(field: FieldDefinition): number {
-    return field.key === "start_in_entity" ? 900 : 0;
-  }
-
-  /** Explains a locked Smart Start switch: the appliance locks it while Auto Smart Start is off. */
-  protected hintFor(field: FieldDefinition, entity: HassEntity): string {
-    if (field.key !== "smart_start_entity" || !isReadonly(entity)) return "";
-    const auto = this.getState("auto_smart_start_entity");
-    return auto && canonicalState(auto) === "off" ? translate(this.hass, "hint.smart_start_locked", "Smart Start is locked while Auto Smart Start is off.") : "";
-  }
-
-  protected renderPrimary(mode: ReturnType<typeof deriveMode>) {
-    if (!this._config || !this.hass) return nothing;
-    const fields = this.definition.fields.filter(field => this.primaryFieldKeys().includes(field.key))
-      .filter(field => showQuantityField(field.key, this.hass!, this._config!))
-      .map(field => ({ field, entity: this.getState(field.key) })).filter(item => !!item.entity);
-    return html`<div class="primary-grid">${fields.map(({field,entity}) => html`
-      <hcd-entity-control .hass=${this.hass} .entity=${entity} .label=${fieldLabel(this.hass,field)} .kind=${this.controlKind(field,entity!)}
-        .valueLabels=${field.key === "selected_program_entity" ? this._config?.program_names || {} : {}}
-        .stepSeconds=${this.stepFor(field)} .hint=${this.hintFor(field, entity!)}
-        .busy=${this._busyIds.has(entity!.entity_id)}></hcd-entity-control>
-    `)}</div>`;
-  }
+  /** Extra content at the top of the details (the hob draws its zones here). */
+  protected renderExtra(): unknown { return nothing; }
 
   protected configuredFields(section: SectionId): Array<{ field: FieldDefinition; entity: HassEntity }> {
     if (!this._config || !this.hass) return [];
     return this.definition.fields
       .filter((field) => field.section === section)
-      .filter((field) => !this.primaryFieldKeys().includes(field.key) && !field.key.startsWith("zone_"))
+      .filter((field) => !field.key.startsWith("zone_") && !this.ownFieldKeys().includes(field.key))
       .filter((field) => showQuantityField(field.key, this.hass!, this._config!))
       .filter((field) => !["active_program_entity", "progress_entity", "remaining_time_entity"].includes(field.key))
       .map((field) => ({ field, entity: this.getState(field.key)! }))
@@ -238,16 +196,16 @@ export abstract class BaseApplianceCard extends LitElement {
     }
   }
 
-  protected handleControl(event: CustomEvent<ControlEventDetail>): void {
+  private handleControl(event: CustomEvent<ControlEventDetail>): void {
     const { entity, action, value } = event.detail;
     void this.withBusy(entity, async () => {
       if (!this.hass) return;
-      if (action === "brightness" && typeof value === "number") await setBrightness(this.hass, entity, value);
-      if (action === "fan" && typeof value === "number") await setFanSpeed(this.hass, entity, value);
       if (action === "press") await pressEntity(this.hass, entity);
       if (action === "toggle") await toggleEntity(this.hass, entity);
       if (action === "select" && typeof value === "string") await selectOption(this.hass, entity, value);
       if (action === "number" && typeof value === "number") await setNumber(this.hass, entity, value);
+      if (action === "brightness" && typeof value === "number") await setBrightness(this.hass, entity, value);
+      if (action === "fan" && typeof value === "number") await setFanSpeed(this.hass, entity, value);
     });
   }
 
@@ -264,7 +222,19 @@ export abstract class BaseApplianceCard extends LitElement {
     if (entity) void this.withBusy(entity, () => pressEntity(this.hass!, entity));
   }
 
-  protected renderTimes(times: TimeSummary) {
+  /** A start delay moves in 15 minute steps; the appliance accepts any value (own device logs). */
+  /** Explains a locked Smart Start switch: the appliance locks it while Auto Smart Start is off. */
+  private hintFor(field: FieldDefinition, entity: HassEntity): string {
+    if (field.key !== "smart_start_entity" || !isReadonly(entity)) return "";
+    const auto = this.getState("auto_smart_start_entity");
+    return auto && canonicalState(auto) === "off" ? translate(this.hass, "hint.smart_start_locked", "Smart Start is locked while Auto Smart Start is off.") : "";
+  }
+
+  private stepFor(field: FieldDefinition): number {
+    return field.key === "start_in_entity" ? 900 : 0;
+  }
+
+  private renderTimes(times: TimeSummary) {
     const hass = this.hass!;
     const chip = (label: string, value = "") => html`<span class="time-chip">${label}${value ? html` <b>${value}</b>` : nothing}</span>`;
     const at = (key: string, fallback: string, epoch: number) => translate(hass, key, fallback).replace("{t}", clockText(hass, epoch));
@@ -279,15 +249,15 @@ export abstract class BaseApplianceCard extends LitElement {
     </div>`;
   }
 
-  protected renderPower() {
+  private renderPower(disabled: boolean) {
     const power = this.getState("power_entity") || this.getState("power_state_entity");
     if (!power) return nothing;
     const domain = power.entity_id.split(".")[0];
     const kind = domain === "select" || domain === "input_select" ? "select" : domain === "light" ? "light" : domain === "switch" || domain === "input_boolean" ? "toggle" : "status";
-    return html`<div class="power-row"><hcd-entity-control .hass=${this.hass} .entity=${power} .label=${translate(this.hass, "power", "Power")} .kind=${kind} .busy=${this._busyIds.has(power.entity_id)}></hcd-entity-control></div>`;
+    return html`<div class="power-row"><hcd-entity-control .hass=${this.hass} .entity=${power} .label=${translate(this.hass, "power", "Power")} .kind=${kind} .busy=${this._busyIds.has(power.entity_id)} .disabled=${disabled}></hcd-entity-control></div>`;
   }
 
-  protected renderActions(mode: ReturnType<typeof deriveMode>) {
+  private renderActions(mode: ReturnType<typeof deriveMode>) {
     if (!this._config || !this.hass || mode === "off" || mode === "unavailable") return nothing;
     const actionSpec = mode === "paused"
       ? [["resume_entity", translate(this.hass, "action.resume", "Resume"), "mdi:play", true, false], ["cancel_entity", translate(this.hass, "action.cancel", "Cancel"), "mdi:stop", false, true]]
@@ -304,7 +274,7 @@ export abstract class BaseApplianceCard extends LitElement {
     return actions.length ? html`<div class="primary-actions"><hcd-action-buttons .actions=${actions} .busyIds=${this._busyIds} .confirmingId=${this._confirmingId}></hcd-action-buttons></div>` : nothing;
   }
 
-  protected renderSection(section: SectionId) {
+  private renderSection(section: SectionId, disabled: boolean) {
     if (!this._config) return nothing;
     if (section === "options" && this._config.show_options_section === false) return nothing;
     if (section === "status" && this._config.show_status_section === false) return nothing;
@@ -317,13 +287,13 @@ export abstract class BaseApplianceCard extends LitElement {
         <div class="entity-slot"><hcd-entity-control .hass=${this.hass} .entity=${entity} .label=${fieldLabel(this.hass, field)} .kind=${this.controlKind(field, entity)}
           .valueLabels=${field.key === "selected_program_entity" || field.key === "active_program_entity" ? this._config?.program_names || {} : {}}
           .stepSeconds=${this.stepFor(field)} .hint=${this.hintFor(field, entity)}
-          .busy=${this._busyIds.has(entity.entity_id)}></hcd-entity-control>
+          .busy=${this._busyIds.has(entity.entity_id)} .disabled=${disabled && field.kind !== "status" && !field.allowWhileActive}></hcd-entity-control>
         </div>
       `)}</div>
     </hcd-expandable-section>`;
   }
 
-  protected controlKind(field: FieldDefinition, entity: HassEntity): FieldDefinition["kind"] {
+  private controlKind(field: FieldDefinition, entity: HassEntity): FieldDefinition["kind"] {
     if (field.kind === "status" || field.kind === "button") return field.kind;
     const domain = entity.entity_id.split(".")[0];
     if (domain === "select" || domain === "input_select") return "select";
@@ -336,56 +306,76 @@ export abstract class BaseApplianceCard extends LitElement {
 
   render() {
     if (!this._config || !this.hass) return nothing;
-    if (!discoveryKey(this._config) && !Object.keys(this._config).some(key=>key.endsWith("_entity"))) {
-      return html`<ha-card><div class="daily-controls" style="padding-top:20px">${translate(this.hass,"direct.select_device","Choose the appliance in the card editor.")}</div></ha-card>`;
+    if (!discoveryKey(this._config) && !Object.keys(this._config).some((key) => key.endsWith("_entity"))) {
+      return html`<ha-card><div style="padding:20px">${translate(this.hass, "direct.select_device", "Choose the appliance in the card editor.")}</div></ha-card>`;
     }
-    const status = this.getState("operating_state_entity") || this.getState("status_entity") || this.getState("power_entity");
-    const power = this.getState("power_entity");
+    const status = this.getState("operating_state_entity") || this.getState("status_entity") || this.getState("power_state_entity") || this.getState("power_entity") || this.getState("entity");
+    const power = this.getState("power_entity") || this.getState("power_state_entity");
+    const activeProgram = this.getState("active_program_entity");
+    const selectedProgram = this.getState("selected_program_entity");
+    const progress = progressValue(this.getState("progress_entity"));
+    const remaining = (this.supportsField("remaining_time_entity") ? this.getState("remaining_time_entity") : undefined)
+      || (this.supportsField("finish_at_entity") ? this.getState("finish_at_entity") : undefined);
     const mode = deriveMode(power, status);
     const active = isActiveMode(mode);
+    const program = active ? activeProgram || selectedProgram : selectedProgram || activeProgram;
+    const summaryProgram = mode === "off" ? undefined : program;
+    const summaryProgress = active ? progress : undefined;
+    const summaryRemaining = active ? remaining : undefined;
     const headerStatus = mode === "off" && power ? power : status;
-    const program = active ? this.getState("active_program_entity") || this.getState("selected_program_entity") : this.getState("selected_program_entity");
-    const remaining = this.getState("remaining_time_entity") || this.getState("finish_at_entity");
-    const progress = progressValue(this.getState("progress_entity"));
+    const animations = this._config.animations !== false;
     const times = this.definition.kind === "oven" || this.definition.kind === "dishwasher"
       ? summarizeTimes({ active, status: this.getState("operating_state_entity"), remaining: this.getState("remaining_time_entity"),
         elapsed: this.getState("elapsed_time_entity"), estimate: this.getState("estimated_time_entity"), startIn: this.getState("start_in_entity"),
         smartStart: isOn(this.getState("smart_start_entity")) || isOn(this.getState("auto_smart_start_entity")), now: Date.now() })
       : undefined;
-    const phase = phaseText(this.hass, this.getState("phase_entity"), active, this.getState("operating_state_entity"));
     const message = messageNotice(this.hass, this.getState("messages_entity"));
-    const warnings = this.definition.fields.filter(f => f.warning && f.key !== "messages_entity").map(field => ({field, entity:this.getState(field.key)}))
-      .filter(({field,entity}) => entity && isWarningActive(entity,field.warningStates,field.warningBelow));
-    const metrics = this.definition.fields.filter(f => f.prominent).map(f=>this.getState(f.key)).filter(isAvailable);
-    const accent = resolveAccentColor(this._config.accent_color,this.definition.accent);
-    return html`<ha-card style=${styleMap({"--hc-accent":accent})} @hcd-control=${this.handleControl} @hcd-action=${this.handleAction}>
-      <div class="shell">
-        <header class="card-header">
-          <button class="identity" type="button" @click=${this.showMoreInfo}>
-            <span class="eyebrow">HOME CONNECT DIRECT · ${translate(this.hass,"device."+this.definition.kind,this.definition.defaultName)}</span>
-            <span class="card-title">${this._config.name || this.hass.devices?.[this._config.device_id || ""]?.name_by_user || this.hass.devices?.[this._config.device_id || ""]?.name || translate(this.hass,"device."+this.definition.kind,this.definition.defaultName)}</span>
+    const warnings = this.definition.fields
+      .filter((field) => field.warning && field.key !== "messages_entity")
+      .map((field) => ({ field, entity: this.getState(field.key) }))
+      .filter(({ field, entity }) => entity && isWarningActive(entity, field.warningStates, field.warningBelow));
+    const prominent = this.definition.fields
+      .filter((field) => field.prominent)
+      .map((field) => ({ field, entity: this.getState(field.key) }))
+      .filter(({ entity }) => isAvailable(entity));
+    const infoEntityId = this.infoEntityId();
+    const accent = resolveAccentColor(this._config.accent_color, this.definition.accent);
+    const phase = phaseText(this.hass, this.getState("phase_entity"), active, this.getState("operating_state_entity"));
+    const connection = this.getState("connection_entity");
+    const offline = !!connection && !isOn(connection);
+    const device = this._config.device_id ? this.hass.devices?.[this._config.device_id] : undefined;
+    const programNames = this._config.program_names;
+
+    const showActivity = mode !== "off" && (isAvailable(program) || isAvailable(summaryRemaining) || summaryProgress !== undefined);
+
+    return html`<ha-card style=${styleMap({ "--hc-accent": accent })} @hcd-control=${this.handleControl} @hcd-action=${this.handleAction}>
+      <div class="shell mode-${mode} ${this._expanded ? "expanded" : ""} ${animations ? "" : "no-animation"} ${mode === "unavailable" ? "unavailable" : ""}">
+        <div class="summary ${summaryProgress !== undefined && this._config.show_progress !== false ? "has-progress" : ""}">
+          <button class="summary-button header-button" type="button" ?disabled=${!infoEntityId} @click=${this.showMoreInfo} title=${translate(this.hass, "action.more_info", "More information")} aria-label=${translate(this.hass, "action.more_info", "More information")}>
+            <hcd-appliance-header .name=${this._config.name || device?.name_by_user || device?.name || translate(this.hass, `device.${this.definition.kind}`, this.definition.defaultName)} .icon=${this._config.icon || this.definition.defaultIcon}
+              .status=${displayState(this.hass, headerStatus)} .program=${isAvailable(summaryProgram) ? displayProgramName(this.hass, summaryProgram!, programNames) : ""} .phase=${phase && phase !== displayState(this.hass, headerStatus) ? phase : ""} .tone=${stateTone(status)} .offline=${offline} .mode=${mode} .accent=${accent}></hcd-appliance-header>
           </button>
-          <span class="state-label ${mode} ${stateTone(status)}">${this.getState("connection_entity") ? html`<span class="connection-dot ${this.isOffline() ? "offline":""}" title=${translate(this.hass,this.isOffline()?"direct.disconnected":"direct.connected",this.isOffline()?"Device disconnected":"Connected")}></span>`:nothing}${headerStatus ? displayState(this.hass,headerStatus) : translate(this.hass,"ready","Ready")}</span>
-        </header>
-        ${message ? html`<div class="warning-strip"><span class="notice ${message.tone}" role="status"><ha-icon .icon=${message.icon}></ha-icon>${message.text}</span></div>`:nothing}
-        ${warnings.length ? html`<div class="warning-strip">${warnings.map(({field,entity})=>html`<span class="notice">${fieldLabel(this.hass,field)}${entity?.entity_id.startsWith("binary_sensor.") ? "" : ": "+displayState(this.hass!,entity)}</span>`)}</div>`:nothing}
-        ${active && isAvailable(program) ? html`<div class="now-running"><span>${displayProgramName(this.hass,program!,this._config.program_names)}${phase ? html` <em class="phase">· ${phase}</em>` : nothing}</span>${isAvailable(remaining) && !times ? html`<strong>${displayState(this.hass,remaining)}</strong>`:nothing}</div>`:nothing}
-        ${active && progress !== undefined && this._config.show_progress !== false ? html`<div class="progress-line"><span style=${`width:${progress}%`}></span></div>`:nothing}
-        ${times ? this.renderTimes(times) : nothing}
-        ${metrics.length ? html`<div class="key-metrics">${metrics.map(e=>html`<strong>${displayState(this.hass!,e)}</strong>`)}</div>`:nothing}
-        <div class="daily-controls">
-          ${this.renderPower()}
-          ${this.renderPrimary(mode)}
-          ${this.renderActions(mode)}
+          <button class="summary-button summary-toggle" type="button" @click=${this.toggleExpanded} aria-expanded=${String(this._expanded)} aria-label=${translate(this.hass, "action.toggle_details", "Toggle details")}><div class="metrics">
+            ${prominent.map(({ entity }) => html`<span class="metric">${displayState(this.hass!, entity)}</span>`)}
+            ${summaryProgress !== undefined && this._config.show_progress !== false ? html`<span class="metric progress">${Math.round(summaryProgress)}%</span>` : ""}
+            ${isAvailable(summaryRemaining) && this._config.show_remaining_time !== false ? html`<span class="metric">${displayState(this.hass, summaryRemaining)}</span>` : ""}
+          </div><ha-icon class="chevron" icon="mdi:chevron-down"></ha-icon></button>
+          ${summaryProgress !== undefined && this._config.show_progress !== false ? html`<div class="summary-progress" aria-hidden="true"><div class="summary-progress-fill" style=${`transform:scaleX(${summaryProgress / 100})`}></div></div>` : ""}
         </div>
-        <footer><button class="details-button" type="button" @click=${this.toggleExpanded} aria-expanded=${String(this._expanded)}>${translate(this.hass,"direct.details","Details & settings")} <span>${this._expanded ? "−":"+"}</span></button></footer>
-        ${this._expanded ? html`<div class="details-content">
-          ${this.renderSection("program")}
-          ${this.renderSection("options")}
-          ${this.renderSection("status")}
-          ${this.renderSection("settings")}
-        </div>`:nothing}
-        ${this._error ? html`<div class="error" role="alert">${this._error}<button @click=${()=>{this._error="";}}>×</button></div>`:nothing}
+        ${message ? html`<div class="message-strip"><div class="notice ${message.tone}" role="status"><ha-icon .icon=${message.icon}></ha-icon>${message.text}</div></div>` : ""}
+        <div class="details"><div class="details-inner"><div class="details-content">
+          ${warnings.length ? html`<div class="warning-strip">${warnings.map(({ field, entity }) => html`<hcd-status-chip .label=${fieldLabel(this.hass, field)} .value=${entity?.entity_id.startsWith("binary_sensor.") ? "" : displayState(this.hass!, entity)} warning icon="mdi:alert-outline"></hcd-status-chip>`)}</div>` : ""}
+          ${this.renderExtra()}
+          ${this.renderPower(false)}
+          ${times ? this.renderTimes(times) : ""}
+          ${showActivity ? html`<div class="activity"><div class="activity-top"><div class="activity-copy"><div class="activity-label">${mode === "running" ? translate(this.hass, "running", "Now running") : mode === "paused" ? translate(this.hass, "paused", "Paused") : translate(this.hass, "ready", "Ready")}</div><div class="activity-program">${isAvailable(program) ? displayProgramName(this.hass, program!, programNames) : translate(this.hass, "appliance_status", "Appliance status")}</div></div>${isAvailable(summaryRemaining) && this._config.show_remaining_time !== false && !times ? html`<div class="activity-time">${displayState(this.hass, summaryRemaining)}</div>` : ""}</div>${summaryProgress !== undefined && this._config.show_progress !== false ? html`<hcd-progress-display .value=${summaryProgress} .label=${translate(this.hass, "progress", "Program progress")} .animated=${animations}></hcd-progress-display>` : ""}</div>` : ""}
+          ${this.renderActions(mode)}
+          ${this.renderSection("program", false)}
+          ${this.renderSection("options", false)}
+          ${this.renderSection("status", false)}
+          ${this.renderSection("settings", false)}
+        </div></div></div>
+        ${this._error ? html`<div class="error" role="alert"><span>${this._error}</span><button type="button" @click=${() => { this._error = ""; }} aria-label=${translate(this.hass, "action.dismiss", "Dismiss")} title=${translate(this.hass, "action.dismiss", "Dismiss")}><ha-icon icon="mdi:close"></ha-icon></button></div>` : ""}
       </div>
     </ha-card>`;
   }

@@ -1,18 +1,20 @@
 import "./editors/dishwasher-editor";
 import "./editors/oven-editor";
 import "./editors/coffee-editor";
-import "./editors/hood-editor";
+import "./editors/dryer-editor";
 import "./editors/hob-editor";
+import "./editors/hood-editor";
 import "./cards/dishwasher-card";
 import "./cards/oven-card";
 import "./cards/coffee-card";
-import "./cards/hood-card";
+import "./cards/dryer-card";
 import "./cards/hob-card";
-import { coffeeDefinition, dishwasherDefinition, ovenDefinition, hoodDefinition, hobDefinition } from "./definitions";
+import "./cards/hood-card";
+import { coffeeDefinition, dishwasherDefinition, dryerDefinition, hobDefinition, hoodDefinition, ovenDefinition } from "./definitions";
 import { VERSION } from "./version";
 import { matchesApplianceEntity } from "./helpers/suggestion";
 
-const definitions = [dishwasherDefinition, ovenDefinition, coffeeDefinition, hoodDefinition, hobDefinition];
+const definitions = [dishwasherDefinition, ovenDefinition, coffeeDefinition, dryerDefinition, hobDefinition, hoodDefinition];
 window.customCards = window.customCards || [];
 for (const definition of definitions) {
   if (!window.customCards.some((card) => card.type === definition.cardType.replace("custom:", ""))) {

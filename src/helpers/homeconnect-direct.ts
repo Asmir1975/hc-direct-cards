@@ -201,6 +201,9 @@ const specific: Record<ApplianceKind, Record<string, string[]>> = {
     "hygiene_entity": [
       "switch_hygiene_plus"
     ],
+    "aquastop_entity": [
+      "binary_sensor_aqua_stop"
+    ],
     "smart_start_entity": [
       "switch_smart_start"
     ],
@@ -390,6 +393,56 @@ const specific: Record<ApplianceKind, Record<string, string[]>> = {
     ],
     "power_move_rear_right_entity": [
       "select_hob_power_move_rear_right"
+    ]
+  },
+  "dryer": {
+    "phase_entity": [
+      "sensor_dryer_process_phase",
+      "sensor_laundry_process_phase"
+    ],
+    "speed_perfect_entity": [
+      "switch_laundry_speed_perfect"
+    ],
+    "hygiene_entity": [
+      "switch_laundry_hygiene"
+    ],
+    "half_load_entity": [
+      "switch_half_load"
+    ],
+    "gentle_entity": [
+      "switch_laundry_gentle"
+    ],
+    "wrinkle_guard_entity": [
+      "switch_laundry_wrinkle_guard"
+    ],
+    "silent_entity": [
+      "switch_laundry_silent_mode"
+    ],
+    "reload_entity": [
+      "sensor_laundry_reload"
+    ],
+    "condensate_entity": [
+      "binary_sensor_condensate_container_full"
+    ],
+    "lint_filter_entity": [
+      "binary_sensor_lint_filter_full"
+    ],
+    "care_entity": [
+      "binary_sensor_maintenance_reminder"
+    ],
+    "load_recommendation_entity": [
+      "sensor_laundry_load_recommendation"
+    ],
+    "drum_light_entity": [
+      "light_drum_light",
+      "switch_drum_light"
+    ],
+    "door_light_entity": [
+      "light_door_ring",
+      "switch_door_light_ring"
+    ],
+    "brightness_entity": [
+      "number_laundry_brightness"
     ]
   }
 };

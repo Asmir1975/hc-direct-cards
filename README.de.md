@@ -5,12 +5,12 @@
 <a href="https://github.com/Asmir1975/hc-direct-cards/releases/latest"><img src="https://img.shields.io/github/v/release/Asmir1975/hc-direct-cards?color=176b70&label=version" alt="Aktuelle Version"></a>
 <a href="https://github.com/Asmir1975/hc-direct-cards/releases"><img src="https://img.shields.io/github/downloads/Asmir1975/hc-direct-cards/total?color=b9794a&label=Downloads" alt="Downloads"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/Lizenz-MIT-176b70" alt="MIT-Lizenz"></a>
-<img src="https://img.shields.io/badge/Karten-5-b9794a" alt="5 Karten">
+<img src="https://img.shields.io/badge/Karten-6-b9794a" alt="6 Karten">
 <img src="https://img.shields.io/badge/TypeScript-Lit-3178c6" alt="TypeScript und Lit">
 </p>
 
 HC Direct Cards gibt Home Assistant je eine Karte für Kochfeld, Dunstabzugshaube, Ofen,
-Geschirrspüler und Kaffeemaschine. Entwickelt von
+Geschirrspüler, Kaffeemaschine und Trockner. Entwickelt von
 [Asmir1975](https://github.com/Asmir1975) für die Integration
 [Home Connect Direct](https://github.com/Asmir1975/homeconnect_direct).
 
@@ -18,8 +18,8 @@ Die Karten sind eine optionale Ergänzung zur Integration. Sie zeigen, was die I
 bereitstellt, und senden die Werte, die sie erwartet.
 
 Gerät im visuellen Editor auswählen, die Karte ordnet die passenden Entitäten selbst zu.
-Die Hauptansicht zeigt die tägliche Bedienung, weitere Werte und Einstellungen lassen
-sich aufklappen.
+Der Kopf zeigt das Gerät mit Zustand, Programm und Phase. Tippen Sie auf die Karte, um
+die Bedienung zu öffnen. Weitere Werte und Einstellungen stehen in Bereichen darunter.
 
 Solltemperatur, Dauer und verzögerter Start werden mit den Tasten − und + eingestellt.
 Zeiten gehen in Minuten, Temperaturen in 5er-Schritten.
@@ -27,10 +27,11 @@ Zeiten gehen in Minuten, Temperaturen in 5er-Schritten.
 Ofen und Geschirrspüler zeigen, wie lange ein Programm läuft, wie viel Zeit bleibt und
 wann es endet. Meldungen des Geräts wie „Speise jetzt einschieben“ oder „Programm beendet“
 erscheinen oben in der Karte, auch wenn Sie das Gerät direkt am Gerät bedienen. Der
-Statuschip wird grün, wenn ein Programm fertig ist, und die aktuelle Phase steht neben
-dem Programmnamen.
+Zustandstext im Kopf wird grün, wenn ein Programm fertig ist, orange, wenn das Gerät
+eine Eingabe braucht, und rot bei einem Fehler. Die aktuelle Phase steht neben dem
+Programmnamen.
 
-## Die fünf Karten
+## Die sechs Karten
 
 | Gerät | Kartentyp | Funktionen |
 |---|---|---|
@@ -39,6 +40,7 @@ dem Programmnamen.
 | Ofen | `custom:hc-direct-oven-card` | Programm, Solltemperatur, Dauer und vorhandene Zusatzfunktionen |
 | Geschirrspüler | `custom:hc-direct-dishwasher-card` | Programm, Start/Abbruch, Restzeit und Meldungen |
 | Kaffeemaschine | `custom:hc-direct-coffee-card` | Getränk, Menge, aromaSelect, Stärke und vorhandene Zusatzfunktionen |
+| Trockner | `custom:hc-direct-dryer-card` | Programm, Optionen, Licht und Wartung. Nur mit erfundenen Daten getestet |
 
 Eine Funktion erscheint nur, wenn ihr eine passende Entität zugeordnet ist. Was ein Gerät
 kann, bestimmt die Integration.
@@ -62,7 +64,7 @@ Der geprüfte Entity-Vertrag heißt `homeconnect_ws`.
 2. Unter Einstellungen → Dashboards → Ressourcen als JavaScript-Modul eintragen:
 
    ```text
-   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.2.0
+   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.0.0
    ```
 
 3. Browser vollständig neu laden.
@@ -74,9 +76,8 @@ Der geprüfte Entity-Vertrag heißt `homeconnect_ws`.
 
 5. Im visuellen Editor das Gerät auswählen.
 
-Nur eine Version dieses Kartenpakets gleichzeitig laden. Vorhandene `hc-direct`-Kartentypen
-bleiben gültig. Bei bestehenden Karten im Reiter Layout die empfohlene Größe verwenden
-oder 12 Spalten wählen.
+Dieses Paket nur einmal laden. Es läuft neben dem originalen Home Connect Card Pack,
+weil Kartentypen und Elementnamen sich unterscheiden.
 
 ### HACS
 
@@ -122,7 +123,7 @@ ergänzt weder eine Zonen-Leistungssteuerung noch einen Fernstart für das Kochf
 ## Gut zu wissen
 
 Startverzögerung: „Starten in“ geht in 15-Minuten-Schritten und steht beim Ofen und beim
-Geschirrspüler in der Hauptansicht. Nicht jedes Ofenprogramm nimmt eine Verzögerung an.
+Geschirrspüler im Bereich Programm. Nicht jedes Ofenprogramm nimmt eine Verzögerung an.
 Beim Siemens HB774G1B1 lehnen Programme wie Heißluft-Fritteuse sie ab, die Integration
 antwortet dann „Dieses Programm unterstützt keine Startverzögerung.“ Starten Sie so ein
 Programm trotzdem, ignoriert der Ofen die Verzögerung und startet sofort.
@@ -141,6 +142,7 @@ standardmäßig.
 - Manche Entitäten, etwa die Smart-Start-Schalter des Geschirrspülers, sind in der Integration
   standardmäßig deaktiviert. In Home Assistant aktivieren, dann zeigen die Karten sie an.
 - Die Kochfeldanordnung ist nur für das Siemens EX851LYV5E bestätigt.
+- Die Trocknerkarte ist nur mit erfundenen Daten getestet. Der Autor hat keinen Trockner.
 
 ## Autor, Dank und Lizenz
 
