@@ -63,7 +63,7 @@ The verified entity contract is `homeconnect_ws`.
 2. Under Settings → Dashboards → Resources add it as a JavaScript module:
 
    ```text
-   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.0.1
+   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.0.2
    ```
 
 3. Fully reload the browser.

@@ -64,7 +64,7 @@ Der geprüfte Entity-Vertrag heißt `homeconnect_ws`.
 2. Unter Einstellungen → Dashboards → Ressourcen als JavaScript-Modul eintragen:
 
    ```text
-   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.0.1
+   /local/hc-direct-cards/home-connect-direct-cards.js?v=1.0.2
    ```
 
 3. Browser vollständig neu laden.

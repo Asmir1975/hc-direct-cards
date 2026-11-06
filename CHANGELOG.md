@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2 – 2026-11-06
+- New cards use the full width of a section (12 columns) with automatic height. Cards you have already resized keep their size.
+- While a card is open, the header no longer repeats the progress, the remaining time and the progress bar that the "Active program" block shows. A closed card shows them as before. Measurements such as the oven temperature stay in the header.
+
 ## 1.0.1 – 2026-11-03
 Hob card.
 - The four zones sit in a grid like the real hob: 200 and 300 above 100 and 400. Zones of one row have the same height, also with Join and powerMove.
