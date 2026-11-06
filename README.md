@@ -78,11 +78,15 @@ The verified entity contract is `homeconnect_ws`.
 Load only one copy of this package. It can run next to the original Home Connect Card
 Pack, because the card types and element names differ.
 
-### HACS
+### Marketplace and HACS
 
-Add `https://github.com/Asmir1975/hc-direct-cards` under HACS → ⋮ → Custom repositories
-with type Dashboard, then download HC Direct Cards and reload the browser. The repository
-contains `hacs.json` and the built JavaScript in `dist`.
+- **Home Assistant 2026.11 or newer:** Settings → Marketplace → **Add from link**, enter
+  `https://github.com/Asmir1975/hc-direct-cards`, then **Install**. The first time, Home
+  Assistant asks you to connect GitHub. Reload the browser afterwards.
+- **Older versions (up to 2026.10):** HACS → ⋮ → Custom repositories, the same URL, type
+  Dashboard. Download HC Direct Cards and reload the browser.
+
+The repository contains `hacs.json` and the built JavaScript in `dist`.
 
 ### Switching or removing
 

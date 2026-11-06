@@ -3,6 +3,7 @@
 ## 1.0.2 – 2026-11-06
 - New cards use the full width of a section (12 columns) with automatic height. Cards you have already resized keep their size.
 - While a card is open, the header no longer repeats the progress, the remaining time and the progress bar that the "Active program" block shows. A closed card shows them as before. Measurements such as the oven temperature stay in the header.
+- README: install steps for the Home Assistant Marketplace (2026.11 and newer) next to HACS (older versions).
 
 ## 1.0.1 – 2026-11-03
 Hob card.
